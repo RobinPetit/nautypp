@@ -1,0 +1,10 @@
+# Directories
+nauty
+obj/
+lib/
+
+# Vim
+*.swp
+
+# C++
+*.o
