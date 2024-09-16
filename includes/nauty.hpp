@@ -1,6 +1,7 @@
 #ifndef __NAUTY_WRAPPER_HPP__
 #define __NAUTY_WRAPPER_HPP__
 
+#include <algorithm>
 #include <bit>
 #include <chrono>
 #include <cmath>
@@ -26,6 +27,8 @@
 # endif
 #endif
 
+extern int _geng_main(int, char**);
+extern int _gentreeg_main(int, char**);
 
 static inline void rename_thread(std::thread& thread, const char* name) {
 #ifdef __linux__
@@ -39,17 +42,71 @@ static inline void rename_thread(std::thread& thread, const char* name) {
 #endif
 }
 
-typedef setword xword;  // from geng.c
-typedef graph nauty_graph_t;
-
-extern int _geng_main(int, char**);
-extern int _gentreeg_main(int, char**);
-
 namespace nautypp {
 
+typedef setword xword;  // from geng.c
+typedef graph nauty_graph_t;
 typedef xword Vertex;
 
 class Graph;
+
+struct NautyParameters {
+    bool tree{false};
+    bool connected{true};
+    bool triangle_free{false};
+    int V{-1};
+    int Vmax{-1};
+    int min_deg{-1};
+    int max_deg{std::numeric_limits<int>::max()};
+};
+
+struct NautyThreadLauncher {
+    static void start_gentreeg(int argc, char** argv);
+};
+
+
+/* ******************** Concepts ******************** */
+
+template <typename T>
+concept IsVoid = std::is_same_v<T, void>;
+
+template <typename T>
+struct IsGraphFunctionConstRef :
+        public std::integral_constant<
+            bool,
+            std::is_invocable_v<T, const Graph&>
+            && IsVoid<std::invoke_result_t<T, const Graph&>>
+        > {
+};
+
+template <typename T>
+struct IsGraphFunctionRef :
+        public std::integral_constant<
+            bool,
+            std::is_invocable_v<T, Graph&>
+            && IsVoid<std::invoke_result_t<T, Graph&>>
+        > {
+};
+
+template <typename T>
+concept GraphRefFunctionType = requires(T obj, Graph& G) {
+    { obj(G) };
+};
+template <typename T>
+concept GraphConstRefFunctionType = requires(T obj, const Graph& G) {
+    { obj(G) };
+};
+template <typename T>
+concept GraphFunctionType = GraphRefFunctionType<T>
+                         or GraphConstRefFunctionType<T>;
+template <typename T>
+concept GraphCallbackType = requires(T obj, Graph& G) {
+    { obj(G) };
+};
+
+/* ******************** Types ******************** */
+
+/*      *************** Iterables and Iterators ***************      */
 
 class EdgeIterator {
 public:
@@ -118,6 +175,8 @@ private:
     const Graph& graph;
 };
 
+/*      *************** Graph Properties ***************      */
+
 template <typename T>
 class ComputableProperty {
 public:
@@ -156,14 +215,14 @@ public:
         return computed;
     }
 protected:
+    friend class Graph;
+
     const Graph* graph;
-    //std::reference_wrapper<const Graph> graph;
     bool computed=false;
     T value;
     virtual void compute() = 0;
 
-    friend class Graph;
-    void reset_graph(const Graph* new_graph) {
+    inline void reset_graph(const Graph* new_graph) {
         graph = new_graph;
     }
 };
@@ -206,7 +265,7 @@ protected:
     virtual inline void compute() override final;
 };
 
-//class NautyIterator;
+/*      *************** Graph ***************      */
 
 class BaseGraph {
 public:
@@ -219,6 +278,12 @@ public:
     virtual inline bool are_linked(Vertex v, Vertex w) const = 0;
     virtual inline size_t degree(Vertex v) const = 0;
     virtual inline std::vector<size_t> degree() const = 0;
+    virtual inline size_t delta() const = 0;
+    inline size_t min_degree() const { return delta(); }
+    virtual inline size_t Delta() const = 0;
+    inline size_t max_degree() const { return Delta(); }
+    virtual inline std::pair<size_t, size_t> delta_Delta() const = 0;
+    virtual inline std::pair<size_t, size_t> minmax_degree() const { return delta_Delta(); }
 
     virtual inline std::vector<Vertex> neighbours_of(Vertex v) const = 0;
 };
@@ -281,6 +346,22 @@ public:
         return ret;
     }
 
+    virtual inline size_t delta() const final {
+        auto degrees{degree()};
+        return *std::min_element(degrees.cbegin(), degrees.cend());
+    }
+
+    virtual inline size_t Delta() const final {
+        auto degrees{degree()};
+        return *std::max_element(degrees.cbegin(), degrees.cend());
+    }
+
+    virtual inline std::pair<size_t, size_t> delta_Delta() const {
+        auto degrees{degree()};
+        auto [min_it, max_it] = std::minmax_element(degrees.cbegin(), degrees.cend());
+        return {*min_it, *max_it};
+    }
+
     typedef std::vector<std::pair<size_t, size_t>> DegreeDistribution;
 
     inline DegreeDistribution degree_distribution() const {
@@ -299,11 +380,7 @@ public:
 
     virtual inline bool are_linked(Vertex v, Vertex w) const final {
         return ISELEMENT(
-            GRAPHROW(
-                g,
-                v,
-                _m
-            ),
+            GRAPHROW(g, v, _m),
             w
         );
     }
@@ -390,12 +467,13 @@ public:
     }
 
     friend class EdgeIterator;
-    //friend class NautyIterator;
     friend class NautyContainer;
     friend class EdgeProperty;
     friend class DegreeProperty;
-    friend class std::vector<Graph>;
 
+/* ******************** Static Methods ******************** */
+
+/*      *************** Creation of Graph From Other Representations ***************      */
     /* NO LOOPS! */
     template <typename T>
     inline static Graph from_adjacency_matrix(
@@ -440,6 +518,8 @@ public:
                     ret.link(v, w);
         return ret;
     }
+
+/*      *************** Construction of Graph Families ***************      */
 
     /* return P_N */
     inline static Graph make_path(size_t N) {
@@ -536,7 +616,6 @@ private:
     inline Graph& non_const_self() const {
         return *const_cast<Graph*>(this);
     }
-
 
     inline Vertex first_neighbour_of(Vertex v) const {
         setword Nv{*setwordof(v)};
@@ -638,12 +717,20 @@ void EdgeProperty::compute() {
         value += graph->degree(v);
     value >>= 1;  // sum(d(v)) == 2E
 }
+
+/* ******************** Multithreading Tools ******************** */
+
 enum class NautyStatus {
     DATA_AVAILABLE,
     END_OF_THREAD
 };
 
+// forward declarations
 class Nauty;
+template <GraphFunctionType Callback>
+class NautyWorker;
+
+/*      *************** Containers ***************      */
 
 template <typename T>
 class ContainerBuffer {
@@ -652,8 +739,7 @@ public:
     ContainerBuffer(size_t maxsize):
             _size{maxsize},
             _read_buffer(), _write_buffer(),
-            /*_mutex(),*/ _cv(), _writable{true},
-            _should_swap{false} {
+            _writable{true}, _should_swap{false} {
         _read_buffer.reserve(maxsize);
         _write_buffer.reserve(maxsize);
     }
@@ -681,7 +767,9 @@ public:
     };
 
     inline T pop() {
-        __verify_not_empty_read();
+        do {
+            __verify_not_empty_read();
+        } while(_read_buffer.empty() and _writable);
         if(_read_buffer.empty()) {
             if(write_size() > 0)
                 std::cerr << "SHOULD NOT THROW\n";
@@ -705,13 +793,11 @@ public:
         _writable = false;
     }
 private:
-    size_t                  _size;
-    std::vector<T>          _read_buffer;
-    std::vector<T>          _write_buffer;
-    //std::mutex              _mutex;
-    std::condition_variable _cv;
-    bool        _writable;
-    bool        _should_swap;
+    size_t                    _size;
+    std::vector<T>            _read_buffer;
+    std::vector<T>            _write_buffer;
+    volatile std::atomic_bool _writable;
+    volatile std::atomic_bool _should_swap;
 
     inline void __verify_not_empty_read() {
         using namespace std::chrono_literals;
@@ -720,7 +806,8 @@ private:
         } else {
             while(_writable and not _should_swap)
                 std::this_thread::sleep_for(10ms);
-            std::swap(_read_buffer, _write_buffer);
+            if(_should_swap)
+                std::swap(_read_buffer, _write_buffer);
             _should_swap = false;
         }
     }
@@ -764,11 +851,14 @@ static std::ostream& operator<<(std::ostream& os, const Graph& G) {
 class NautyContainer {
 public:
     NautyContainer():
-            _done{false}, _worker_buffers(), _buffer_idx{0}, _predicate{__true<Graph>} {
+            _done{false}, _worker_buffers(), _buffer_idx{0},
+            _predicate{__true<Graph>} {
     }
 
     inline std::shared_ptr<NautyContainerBuffer> add_new_buffer(size_t buffer_size) {
-        _worker_buffers.push_back(std::move(std::make_shared<NautyContainerBuffer>(buffer_size)));
+        _worker_buffers.push_back(
+            std::move(std::make_shared<NautyContainerBuffer>(buffer_size))
+        );
         return _worker_buffers.back();
     }
 
@@ -779,13 +869,9 @@ public:
             return;
         }
         while(true) {
-            size_t i{0};
             for(auto& buffer : _worker_buffers) {
-                if(buffer->push(G))
+                if(buffer->writable() and buffer->push(G))
                     return;
-                /*else
-                    std::cout << "No room in buffer " << i << std::endl;*/
-                ++i;
             }
             using namespace std::chrono_literals;
             std::this_thread::sleep_for(1ms);
@@ -815,63 +901,12 @@ private:
     }
 };
 
-struct NautyParameters {
-    bool tree{false};
-    bool connected{true};
-    bool triangle_free{false};
-    int V{-1};
-    int Vmax{-1};
-    int min_deg{-1};
-    int max_deg{std::numeric_limits<int>::max()};
-};
-
-struct NautyThreadLauncher {
-    static void start_gentreeg(int argc, char** argv);
-};
-
-template <typename T>
-concept IsVoid = std::is_same_v<T, void>;
-
-template <typename T>
-struct IsGraphFunctionConstRef :
-        public std::integral_constant<
-            bool,
-            std::is_invocable_v<T, const Graph&> &&
-                IsVoid<std::invoke_result_t<T, const Graph&>>
-        > {
-};
-
-template <typename T>
-struct IsGraphFunctionRef :
-        public std::integral_constant<
-            bool,
-            std::is_invocable_v<T, Graph&> &&
-                IsVoid<std::invoke_result_t<T, Graph&>>
-        > {
-};
-
-template <typename T>
-concept GraphRefFunctionType = requires(T obj, Graph& G) {
-    { obj(G) };
-};
-template <typename T>
-concept GraphConstRefFunctionType = requires(T obj, const Graph& G) {
-    { obj(G) };
-};
-
-template <typename T>
-concept GraphFunctionType = GraphRefFunctionType<T>
-                         or GraphConstRefFunctionType<T>;
-
-template <typename T>
-concept GraphCallbackType = requires(T obj, Graph& G) {
-    { obj(G) };
-};
+/*      *************** Workers ***************      */
 
 class BaseNautyWorker {
 public:
     BaseNautyWorker(std::shared_ptr<NautyContainerBuffer> buffer):
-            _buffer{buffer} {
+            _buffer{std::move(buffer)} {
     }
 
     ~BaseNautyWorker() = default;
@@ -902,7 +937,19 @@ public:
             BaseNautyWorker(buffer), _callback{callback} {
     }
 
+    NautyWorker(NautyWorker&) = delete;
+    NautyWorker(NautyWorker&&) = default;
+
+#ifdef NAUTYPP_DEBUG
+    ~NautyWorker() noexcept(false) {
+        if(_buffer->_writable)
+            throw std::runtime_error("Destroying a worker with a readable buffer.");
+        if(_buffer->read_size() > 0)
+            std::cerr << "Destroying worker with read buffer size " << _buffer->read_size() << std::endl;
+    }
+#else
     ~NautyWorker() = default;
+#endif
 
     virtual void operator()(Graph& G) override final {
         _callback(G);
@@ -933,6 +980,8 @@ private:
     Callback _callback;
 };
 
+/*      *************** Nauty ***************      */
+
 class Nauty {
 public:
     Nauty(const NautyParameters& params):
@@ -951,25 +1000,25 @@ public:
             GraphPredicate p=__true<Graph>) {
         Nauty::reset_container();
         Nauty::_container->set_predicate(p);
-        std::vector<std::thread> workers;
+        std::vector<std::thread> worker_threads;
+        std::vector<NautyWorker<GraphFunction>> workers;
+        worker_threads.reserve(nb_workers);
         workers.reserve(nb_workers);
         static char name_buffer[32];
         for(size_t i{0}; i < nb_workers; ++i) {
             auto worker_buffer{Nauty::_container->add_new_buffer(worker_buffer_size)};
-            workers.emplace_back(
+            workers.emplace_back(worker_buffer, callback);
+            worker_threads.emplace_back(
                 &NautyWorker<GraphFunction>::run,
-                NautyWorker(
-                    worker_buffer,
-                    callback
-                )
+                &workers.back()
             );
             std::sprintf(name_buffer, "Worker %u", static_cast<unsigned>(i+1));
-            rename_thread(workers.back(), name_buffer);
+            rename_thread(worker_threads.back(), name_buffer);
         }
         auto geng_thread{start_nauty()};
-        for(size_t i{0}; i < nb_workers; ++i)
-            workers.at(i).join();
         geng_thread.join();
+        for(size_t i{0}; i < nb_workers; ++i)
+            worker_threads.at(i).join();
     }
 
     template <GraphCallbackType Callback>
@@ -995,9 +1044,9 @@ public:
             rename_thread(workers.back(), name_buffer);
         }
         auto geng_thread{start_nauty()};
+        geng_thread.join();
         for(size_t i{0}; i < nb_workers; ++i)
             workers.at(i).join();
-        geng_thread.join();
         for(size_t idx{1}; idx < nb_workers; ++idx)
             wrappers.at(0).join(wrappers.at(idx));
         return wrappers.at(0).get();
@@ -1020,24 +1069,6 @@ private:
             : start_geng()
         )};
 #ifdef __linux__
-        /*
-        sched_param sch{80};
-        int res{pthread_setschedparam(
-            ret.native_handle(),
-            SCHED_FIFO,
-            &sch
-        )};
-        if(res != 0) {
-            std::cerr << "[WARNING] Could not set priority "
-                      << sch.sched_priority << " (error ";
-            switch(res) {
-            case EPERM: std::cerr << "EPERM"; break;
-            case EINVAL: std::cerr << "EINVAL"; break;
-            default: std::cerr << "<unknown: " << res << ">";
-            }
-            std::cerr << ")\n";
-        }
-        */
         rename_thread(
             ret,
             parameters.tree
@@ -1079,16 +1110,17 @@ private:
             geng_argv[i] = params[i];
         std::thread t(
             [this](std::unique_ptr<NautyContainer>& container) {
+                int min_deg, max_deg;
                 for(int V{this->parameters.V}; V <= this->parameters.Vmax; ++V) {
                     auto& parameters{this->parameters};
-                    parameters.min_deg = std::min(parameters.min_deg, V-1);
-                    parameters.max_deg = std::max(parameters.max_deg, V-1);
+                    min_deg = std::min(parameters.min_deg, V-1);
+                    max_deg = std::min(parameters.max_deg, V-1);
                     std::sprintf(
                         params[1],
                         "-%sd%dD%d%s%s",
                         parameters.connected ? "c" : "",
-                        parameters.min_deg,
-                        parameters.max_deg,
+                        min_deg,
+                        max_deg,
                         parameters.triangle_free ? "t" : "",
 #ifdef NAUTYPP_DEBUG
                         ""
