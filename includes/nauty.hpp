@@ -17,7 +17,7 @@
 #include <pthread.h>
 #endif
 
-#include "nauty/gtools.h"
+#include <nauty/gtools.h>
 
 #ifdef NAUTYPP_SGO
 # ifndef NAUTYPP_SMALL_GRAPH_SIZE
@@ -828,7 +828,7 @@ typedef ContainerBuffer<Graph> NautyContainerBuffer;
 typedef std::function<bool(const Graph&)> GraphPredicate;
 
 template <typename... Args>
-bool __true(const Args&... args) {
+bool __true(const Args&... /* args */) {
     return true;
 }
 

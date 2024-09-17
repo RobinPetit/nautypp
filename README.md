@@ -8,7 +8,12 @@ running some computations.
 ## Install
 
 Be sure you have downloaded and compiled `nauty` at first (see the README in the downloaded zip for more informations).
-Make sure you have a directory called `nauty` in this directory (e.g. have a symlink to the actual directory).
+Your environment variable `CPATH` must also contain a path to a directory containing a subdirectory `nauty` containing
+all the headers of the `nauty` source code.
+
+Make sure you also have set an environment variable `NAUTY_SRC_PATH` containing the path to the source and compiled
+files of `nauty`. If you don't want/can't set an environment variable, you can add it as a variable in the Makefile.
+
 Create directories:
 * `obj/debug`
 * `obj/release`
