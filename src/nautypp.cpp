@@ -17,10 +17,6 @@ void _geng_callback(FILE* f, graph* g, int n) {
 }
 
 namespace nautypp {
-void NautyThreadLauncher::start_gentreeg(int argc, char** argv) {
-    _gentreeg_main(argc, argv);
-    Nauty::get_container()->set_over();
-}
 
 std::unique_ptr<NautyContainer> Nauty::_container;
 

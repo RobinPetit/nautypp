@@ -11,6 +11,9 @@ NAUTY_DEPENDENCIES=${NAUTY_SRC_PATH}/gtnauty.o ${NAUTY_SRC_PATH}/gtools.o ${NAUT
 INSTALL_INCLUDES_PATH=~/includes/
 INSTALL_LIB_PATH=~/lib/
 
+DOC_DIR=doc/
+REMOTE_ORIGIN=git@github.com:RobinPetit/nautypp.git
+
 build: build_debug build_release
 build_debug: lib/debug/libnautypp.a
 build_release: lib/release/libnautypp.a
@@ -41,4 +44,12 @@ clear:
 	rm -f obj/**/*.d
 	rm -f lib/**/*.a
 
-.PHONY: build clear
+doc:
+	doxygen Doxyfile
+
+pushdoc: doc
+	cd ${DOC_DIR}/html && \
+	if [ ! -d ".git" ]; then git init; git remote add origin ${REMOTE_ORIGIN}; fi && \
+	git add . && git commit -m "Build the doc" && git push -f origin HEAD:gh-pages
+
+.PHONY: build clear doc pushdoc
