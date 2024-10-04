@@ -14,17 +14,14 @@ Your environment variable `CPATH` must also contain a path to a directory contai
 all the headers of the `nauty` source code.
 
 Make sure you also have set an environment variable `NAUTY_SRC_PATH` containing the path to the source and compiled
-files of `nauty`. If you don't want/can't set an environment variable, you can add it as a variable in the Makefile.
+files of `nauty`. Example: `export NAUTY_SRC_PATH=~/includes/nauty/`.
 
-Create directories:
-* `obj/debug`
-* `obj/release`
-* `obj/nauty`
-* `lib/debug`
-* `lib/release`
+If you don't want/can't set an environment variable, you can add it as a variable in the Makefile.
+
+Compilation will create directories `./obj/` and `./lib/` for respectively object files and the compiled static libraries.
 
 Choose where to install the static library and the include files, and modify the variables `INSTALL_INCLUDES_PATH`and
-`INSTALL_LIB_PATH` accordingly in the `Makefile`.
+`INSTALL_LIB_PATH` accordingly in the `Makefile`. If the directories do not exist, they will be created.
 
 Then simply run `$ make install_release` to install `nautypp`.
 

@@ -3,6 +3,8 @@ nauty
 obj/
 lib/
 
+doc/
+
 # Vim
 *.swp
 
