@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['graph_34',['Graph',['../classnautypp_1_1Graph.html#a612561209dcfe15a4d2de263fbd14380',1,'nautypp::Graph::Graph(const graph *G, size_t V)'],['../classnautypp_1_1Graph.html#a14e37f5606e6bd3eba40fa46333128e2',1,'nautypp::Graph::Graph(int *parents, size_t)'],['../classnautypp_1_1Graph.html#afaf30dc050c7151aaaa54cb2a2256a22',1,'nautypp::Graph::Graph(graph *G, size_t V, bool copy=true)'],['../classnautypp_1_1Graph.html#a68fe3e7ccd7b69d89436dd258a7462cc',1,'nautypp::Graph::Graph(size_t V)'],['../classnautypp_1_1Graph.html#a1a92c8d86faa7c615a14e918a335aa57',1,'nautypp::Graph::Graph(Graph &amp;&amp;G)'],['../classnautypp_1_1Graph.html',1,'nautypp::Graph']]]
+  ['find_5fsome_5fclique_37',['find_some_clique',['../classnautypp_1_1Graph.html#a9512c1b95fda8f775cee4fa8d46763a1',1,'nautypp::Graph']]],
+  ['find_5fsome_5findependent_5fset_38',['find_some_independent_set',['../classnautypp_1_1Graph.html#acb4b65e51d70a6a2bbcbe675a512c8a4',1,'nautypp::Graph']]],
+  ['from_5fadjacency_5fmatrix_39',['from_adjacency_matrix',['../classnautypp_1_1Graph.html#a1a74b750c43efdd5b1d5c0ae760cc975',1,'nautypp::Graph::from_adjacency_matrix(const std::vector&lt; T &gt; A, bool upper=true)'],['../classnautypp_1_1Graph.html#ab05cff94e0e3edbfc8e6db3bca18b6f3',1,'nautypp::Graph::from_adjacency_matrix(const std::vector&lt; T &gt; A, size_t V, bool upper=true)']]]
 ];

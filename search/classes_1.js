@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['basenautyworker_78',['BaseNautyWorker',['../classnautypp_1_1BaseNautyWorker.html',1,'nautypp']]]
+  ['alledgeiterator_86',['AllEdgeIterator',['../classnautypp_1_1AllEdgeIterator.html',1,'nautypp']]],
+  ['alledges_87',['AllEdges',['../classnautypp_1_1AllEdges.html',1,'nautypp']]]
 ];

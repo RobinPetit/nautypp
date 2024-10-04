@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['k4_5ffree_38',['K4_free',['../structnautypp_1_1NautyParameters.html#a830c93f2bad3fcfa04b0f474263c291b',1,'nautypp::NautyParameters']]]
+  ['is_5fleaf_43',['is_leaf',['../classnautypp_1_1Graph.html#a8b1045b5051cc75709226cacaad02b65',1,'nautypp::Graph']]],
+  ['isolate_5fvertex_44',['isolate_vertex',['../classnautypp_1_1Graph.html#ab2adb93f87fab5605ec90560179aa45a',1,'nautypp::Graph']]]
 ];
