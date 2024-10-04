@@ -23,6 +23,17 @@
 
 #include <nauty/gtools.h>
 
+/************/
+#define new __new_var__  // this C file has functions with local variables called new...
+// this is pretty hacky but C++ cannot implicit-cast void*
+#define calloc(n, s) (set_t)calloc((n), (s))
+extern "C" {
+#include <nauty/nautycliquer.h>
+}
+#undef calloc
+#undef new
+/************/
+
 #ifdef NAUTYPP_SGO
 # ifndef NAUTYPP_SMALL_GRAPH_SIZE
 // graphs with less than that many vertices do not need to be dynamically
@@ -53,6 +64,8 @@ namespace nautypp {
 typedef setword xword;  // from geng.c
 typedef graph nauty_graph_t;
 typedef xword Vertex;
+
+typedef graph_t cliquer_graph_t;  // from nautycliquer.h
 
 class Graph;
 
@@ -191,7 +204,7 @@ class ComputableProperty {
 public:
     ComputableProperty() = delete;
     ComputableProperty(const Graph& G):
-            graph{std::addressof(G)}, computed{false}, value() {
+            graph{std::addressof(G)}, computed{false}, value{} {
     }
     ComputableProperty(const ComputableProperty&) = delete;
     ComputableProperty(ComputableProperty&& other):
@@ -268,10 +281,40 @@ public:
         v = other.v;
         return *this;
     }
+    ~DegreeProperty() = default;
 protected:
     Vertex v;
 
     virtual inline void compute() override final;
+};
+
+class _CliquerGraphProperty final : public ComputableProperty<cliquer_graph_t*> {
+public:
+    _CliquerGraphProperty(const Graph& G):
+            ComputableProperty<cliquer_graph_t*>(G) {
+    }
+    _CliquerGraphProperty(_CliquerGraphProperty&& other):
+            ComputableProperty<cliquer_graph_t*>(std::move(other)) {
+    }
+    _CliquerGraphProperty(const _CliquerGraphProperty&) = delete;
+
+    _CliquerGraphProperty& operator=(const _CliquerGraphProperty&) = delete;
+    inline _CliquerGraphProperty& operator=(_CliquerGraphProperty&& other) {
+        ComputableProperty<cliquer_graph_t*>::operator=(std::move(other));
+        return *this;
+    }
+    ~_CliquerGraphProperty() {
+        clear();
+    }
+protected:
+    virtual inline void compute() override final;
+
+    inline void clear() {
+        if(value != nullptr) {
+            graph_free(value);
+            value = nullptr;
+        }
+    }
 };
 
 /*      *************** Graph ***************      */
@@ -322,11 +365,15 @@ public:
     Graph(const Graph&) = delete;
 
 
-    /// \brief Create a copy of the graph
-    /// \return A copy of the graph
+    /// \brief Create a copy of the graph.
+    /// \return A copy of the graph.
     inline Graph copy() const {
         return Graph(g, n, true);
     }
+
+    /// \brief Construct the complement of the graph.
+    /// \return The complement of this.
+    Graph complement() const;
 
     Graph& operator=(const Graph& other) = delete;
     Graph& operator=(Graph&& other);
@@ -370,8 +417,16 @@ public:
         return AllEdges(*this);
     }
 
+    inline explicit operator graph*() {
+        return g;
+    }
+
     inline explicit operator const graph*() const {
         return g;
+    }
+
+    inline explicit operator cliquer_graph_t*() const {
+        return non_const_self()._as_cliquer.get();
     }
 
     /// \brief Get the degree of a vertex.
@@ -500,6 +555,7 @@ public:
         degrees[v].set_stale();
         degrees[w].set_stale();
         nb_edges.set_stale();
+        _as_cliquer.set_stale();
     }
 
     /// Alias of link()
@@ -621,7 +677,80 @@ public:
         }
         degrees[v].set_stale();
         nb_edges.set_stale();
+        _as_cliquer.set_stale();
     }
+
+    // Cliquer
+
+    /// \brief Find some clique in the graph
+    ///
+    /// This is basically a wrapper for cliquer::clique_unweighted_find_single
+    /// \param minsize A lower bound on the size of the clique.
+    /// \param maxsize An upper bound on the size of the clique.
+    /// \param maximal Whether or not the clique must be maximal
+    /// \return A container of vertices that induce a clique
+    std::vector<Vertex> find_some_clique(size_t minsize, size_t maxsize, bool maximal) const;
+
+    /// \brief Get the clique number of the graph.
+    ///
+    /// \return The clique number \f$\omega(G)\f$.
+    inline size_t max_clique() const {
+        return find_some_clique(0, 0, true).size();
+    }
+
+    /// \brief Find some independent set in the graph.
+    ///
+    /// See find_some_clique() and complement().
+    /// \return A container of vertices that induce an independent set.
+    inline std::vector<Vertex> find_some_independent_set(size_t minsize, size_t maxsize, bool maximal) const {
+        return complement().find_some_clique(minsize, maxsize, maximal);
+    }
+
+    /// \brief Get the independence number of the graph.
+    ///
+    /// Simply using \f$\alpha(G) = \omega(G^\complement)\f$.
+    /// See Graph::max_clique()
+    /// \return The independence number \f$\alpha(G)\f$.
+    inline size_t max_independent_set() const {
+        return complement().max_clique();
+    }
+
+    /// \brief Wrapper for `clique_unweighted_find_all` from `cliquer`.
+    ///
+    /// Only use if you know how to use cliquer directly!
+    /// \param minsize,maxsize,maximal,opts See the documentation from cliquer.
+    /// \return The number of generated cliques.
+    inline size_t apply_to_cliques(size_t minsize, size_t maxsize, bool maximal, clique_options* opts) const {
+        return static_cast<size_t>(clique_unweighted_find_all(
+            static_cast<cliquer_graph_t*>(*this),
+            minsize, maxsize, maximal, opts
+        ));
+    }
+
+    typedef std::function<bool(const std::vector<Vertex>&)> CliqueCallback;
+
+    /// \brief Apply some callback to every generated clique.
+    ///
+    /// Uses `clique_unweighted_find_all` from `cliquer`.
+    /// \param minsize A lower bound on the cliques to generate.
+    /// Set to 0 if no lower bound is provided.
+    /// \param maxsize An upper bound on the cliques to generate.
+    /// If minsize is 0 and maxsize is 0, then all cliques are considered.
+    /// \param maximal `true` if only maximal cliques must be considered.
+    /// \param callback The function to apply on every clique.
+    ///
+    /// **Example**:
+    /// \include cliquer.cpp
+    size_t apply_to_cliques(size_t minsize, size_t maxsize, bool maximal, CliqueCallback callback) const;
+
+    /// \brief Generate all cliques from a graph.
+    ///
+    /// \param minsize,maxsize,maximal See find_some_clique.
+    /// \param A container of cliques.
+    ///
+    /// **Example**:
+    /// \include cliquer.cpp
+    std::vector<std::vector<Vertex>> get_all_cliques(size_t minsize, size_t maxsize, bool maximal) const;
 
     friend class EdgeIterator;
     friend class NautyContainer;
@@ -759,6 +888,7 @@ private:
 
     EdgeProperty nb_edges;
     std::vector<DegreeProperty> degrees;
+    _CliquerGraphProperty _as_cliquer;
 
     inline void reset() {
         if(not host or g == nullptr)
@@ -794,6 +924,7 @@ private:
         return _m;
     }
 
+    // important for the read-only graph properties
     inline Graph& non_const_self() const {
         return *const_cast<Graph*>(this);
     }
@@ -897,6 +1028,14 @@ void EdgeProperty::compute() {
     for(size_t v{0}; v < graph->V(); ++v)
         value += graph->degree(v);
     value >>= 1;  // sum(d(v)) == 2E
+}
+
+void _CliquerGraphProperty::compute() {
+    clear();
+    value = graph_new(graph->V());
+    for(auto [v, w] : graph->edges()) {
+        GRAPH_ADD_EDGE(value, v, w);
+    }
 }
 
 /* ******************** Multithreading Tools ******************** */

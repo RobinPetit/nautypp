@@ -63,7 +63,8 @@ Graph::Graph(const graph* G, size_t V):
 Graph::Graph(graph* G, size_t V, bool copy):
         n{V}, host{copy},
         g{copy ? nullptr : G},
-        nb_edges(*this), degrees() {
+        nb_edges(*this), degrees(),
+        _as_cliquer(*this) {
     if(copy)
         assign_from(G, V);
     init_degrees();
@@ -73,7 +74,8 @@ Graph::Graph(graph* G, size_t V, bool copy):
 Graph::Graph(size_t V):
         n{V}, host{n > NAUTYPP_SMALL_GRAPH_SIZE},
         g{host ? new graph[_m*V] : __small_graph_buffer},
-        nb_edges(*this), degrees() {
+        nb_edges(*this), degrees(),
+        _as_cliquer(*this) {
     for(Vertex v{0}; v < n; ++v)
         g[v] = 0;
     init_degrees();
@@ -86,7 +88,9 @@ Graph::Graph(Graph&& G):
             ? G.g
             : __small_graph_buffer
         },
-        nb_edges{std::move(G.nb_edges)}, degrees(std::move(G.degrees)) {
+        nb_edges{std::move(G.nb_edges)},
+        degrees(std::move(G.degrees)),
+        _as_cliquer(*this) {
     G.host = false;
     if(g == __small_graph_buffer)
         memcpy(g, G.g, _m*G.n*sizeof(graph));
@@ -95,7 +99,8 @@ Graph::Graph(Graph&& G):
 Graph::Graph(size_t V):
         n{V}, host{true},
         g{new graph[_m * V]},
-        nb_edges(*this), degrees() {
+        nb_edges(*this), degrees(),
+        _as_cliquer(*this) {
     for(Vertex v{0}; v < _m*V; ++v)
         g[v] = 0;
     init_degrees();
@@ -104,7 +109,8 @@ Graph::Graph(size_t V):
 Graph::Graph(Graph&& G):
         n{G.n}, host{G.host},
         g{G.g}, nb_edges(std::move(G.nb_edges)),
-        degrees(std::move(G.degrees)) {
+        degrees(std::move(G.degrees)),
+        _as_cliquer(*this) {
     G.host = false;
     G.g = nullptr;
     for(size_t v{0}; v < n; ++v)
@@ -115,7 +121,8 @@ Graph::Graph(Graph&& G):
 
 Graph::Graph(int* parents, size_t V):
         n{V}, host{true}, g{nullptr},
-        nb_edges(*this), degrees() {
+        nb_edges(*this), degrees(),
+        _as_cliquer(*this) {
     g = new graph[_m*n]{0};
     for(size_t v{2}; v <= V; ++v) {
         ADDONEEDGE(
@@ -134,7 +141,93 @@ Graph& Graph::operator=(Graph&& other) {
     nb_edges = std::move(other.nb_edges);
     degrees = std::move(other.degrees);
     other.host = false;
+    _as_cliquer.set_stale();
     return *this;
+}
+
+inline void _nauty_complement(graph* g, int m, int n) {
+    complement(g, m, n);
+}
+
+Graph Graph::complement() const {
+    Graph ret(copy());
+    _nauty_complement(static_cast<nauty_graph_t*>(ret), Graph::__get_m(), V());
+    return ret;
+}
+
+static inline std::vector<Vertex> cliquer_set_to_vector(const set_t set) {
+    size_t size{set_size(set)};
+    std::vector<Vertex> ret;
+    ret.reserve(size);
+    for(Vertex v{0}; v < SET_MAX_SIZE(set); ++v)
+        if(SET_CONTAINS(set, v))
+            ret.push_back(v);
+    return ret;
+}
+
+std::vector<Vertex> Graph::find_some_clique(size_t minsize, size_t maxsize, bool maximal) const {
+    cliquer_graph_t* graph{*this};
+    set_t clique = clique_unweighted_find_single(graph, minsize, maxsize, maximal, NULL);
+    auto ret{cliquer_set_to_vector(clique)};
+    set_free(clique);
+    return ret;
+}
+
+template <typename T>
+static inline std::remove_reference_t<std::remove_cv_t<T>>& _get_user_data_as_ref(clique_options* opts) {
+    return *static_cast<std::remove_reference_t<std::remove_cv_t<T>>*>(
+        opts->user_data
+    );
+}
+
+typedef std::vector<Vertex> Clique;
+typedef std::vector<Clique> VectorOfCliques;
+
+static inline boolean _add_clique(set_t clique, cliquer_graph_t* graph, clique_options* opts) {
+    auto& all_cliques{_get_user_data_as_ref<VectorOfCliques>(opts)};
+    all_cliques.push_back(cliquer_set_to_vector(clique));
+    return true;
+}
+
+std::vector<std::vector<Vertex>> Graph::get_all_cliques(size_t minsize, size_t maxsize, bool maximal) const {
+    std::vector<std::vector<Vertex>> cliques;
+    clique_options opts = {
+        .reorder_function=NULL,
+        .reorder_map=NULL,
+        .time_function=NULL,
+        .output=NULL,
+        .user_function=_add_clique,
+        .user_data=&cliques,
+        .clique_list=NULL,
+        .clique_list_length=0
+    };
+    clique_unweighted_find_all(
+        static_cast<cliquer_graph_t*>(*this),
+        minsize, maxsize, maximal, &opts
+    );
+    return cliques;
+}
+
+static inline boolean _callback(set_t clique, cliquer_graph_t*, clique_options* opts) {
+    auto& callback{_get_user_data_as_ref<std::function<bool(const Clique&)>>(opts)};
+    return callback(cliquer_set_to_vector(clique));
+}
+
+size_t Graph::apply_to_cliques(size_t minsize, size_t maxsize, bool maximal, CliqueCallback callback) const {
+    clique_options opts = {
+        .reorder_function=NULL,
+        .reorder_map=NULL,
+        .time_function=NULL,
+        .output=NULL,
+        .user_function=_callback,
+        .user_data=&callback,
+        .clique_list=NULL,
+        .clique_list_length=0
+    };
+    return clique_unweighted_find_all(
+        static_cast<cliquer_graph_t*>(*this),
+        minsize, maxsize, maximal, &opts
+    );
 }
 
 /***** properties *****/
