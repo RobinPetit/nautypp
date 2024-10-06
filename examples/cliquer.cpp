@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 
+#define OSTREAM_LL_GRAPH
+#define OSTREAM_LL_CLIQUE
 #include <nautypp/nauty.hpp>
 
 using namespace nautypp;

@@ -7,6 +7,9 @@ EXAMPLES=bin/multithreaded_count_triangle_free_graphs bin/multithreaded_heavy_ca
 
 all: ${EXAMPLES}
 
+run: ${EXAMPLES}
+	for test in ${EXAMPLES}; do echo Running test $$test:; $$test; done
+
 bin/%: obj/%.o
 	${CC} -o $@ $^ ${FLAGS}
 
@@ -21,3 +24,6 @@ obj/degree_%.o: degree/%.cpp
 
 obj/cliquer.o: cliquer.cpp
 	${CC} -o $@ $< -c ${FLAGS}
+
+clear:
+	rm -f ${EXAMPLES}

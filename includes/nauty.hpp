@@ -67,6 +67,91 @@ typedef xword Vertex;
 
 typedef graph_t cliquer_graph_t;  // from nautycliquer.h
 
+namespace Cliquer {
+class Set {
+public:
+    class iterator {
+    public:
+        iterator() = delete;
+        iterator(const iterator&) = delete;
+        iterator(iterator&& other);
+        iterator(const set_t s, Vertex v=0): set{s}, current{v} {
+            _goto_next();
+        }
+
+        inline bool operator==(const iterator& other) const {
+            return set == other.set and current == other.current;
+        }
+        inline bool operator!=(const iterator& other) const {
+            return set != other.set or current != other.current;
+        }
+
+        inline Vertex operator*() const {
+            return current;
+        }
+        inline iterator& operator++() {
+            if(current < SET_MAX_SIZE(set))
+                ++current;
+            _goto_next();
+            return *this;
+        }
+    private:
+        const set_t set;
+        Vertex current;
+
+        inline void _goto_next() {
+            while(current < SET_MAX_SIZE(set) and
+                  not SET_CONTAINS(set, current))
+                ++current;
+        }
+    };
+    Set() = delete;
+    Set(set_t set, bool copy=true): _vtx_set{nullptr}, host{false} {
+        if(copy) {
+            _vtx_set = set_duplicate(set);
+            host = true;
+        } else {
+            _vtx_set = set;
+        }
+    }
+    Set(Set&& other):
+            _vtx_set{std::move(other._vtx_set)},
+            host{other.host} {
+        other.host = false;
+    }
+
+    ~Set() {
+        if(host) {
+            set_free(_vtx_set);
+            _vtx_set = nullptr;
+            host = false;
+        }
+    }
+
+    inline iterator begin() const {
+        return iterator(_vtx_set, 0);
+    }
+    inline iterator end() const {
+        return iterator(_vtx_set, SET_MAX_SIZE(_vtx_set));
+    }
+
+    inline explicit operator std::vector<Vertex>() const {
+        std::vector<Vertex> ret;
+        ret.reserve(static_cast<size_t>(set_size(_vtx_set)));
+        for(Vertex v : *this)
+            ret.push_back(v);
+        return ret;
+    }
+    inline size_t size() const {
+        return static_cast<size_t>(set_size(_vtx_set));
+    }
+private:
+    set_t _vtx_set;
+    bool host;
+};
+}
+
+
 class Graph;
 
 /// \struct NautyParameters
@@ -689,7 +774,7 @@ public:
     /// \param maxsize An upper bound on the size of the clique.
     /// \param maximal Whether or not the clique must be maximal
     /// \return A container of vertices that induce a clique
-    std::vector<Vertex> find_some_clique(size_t minsize, size_t maxsize, bool maximal) const;
+    Cliquer::Set find_some_clique(size_t minsize, size_t maxsize, bool maximal) const;
 
     /// \brief Get the clique number of the graph.
     ///
@@ -702,7 +787,8 @@ public:
     ///
     /// See find_some_clique() and complement().
     /// \return A container of vertices that induce an independent set.
-    inline std::vector<Vertex> find_some_independent_set(size_t minsize, size_t maxsize, bool maximal) const {
+    inline Cliquer::Set find_some_independent_set(size_t minsize, size_t maxsize,
+            bool maximal) const {
         return complement().find_some_clique(minsize, maxsize, maximal);
     }
 
@@ -720,14 +806,13 @@ public:
     /// Only use if you know how to use cliquer directly!
     /// \param minsize,maxsize,maximal,opts See the documentation from cliquer.
     /// \return The number of generated cliques.
-    inline size_t apply_to_cliques(size_t minsize, size_t maxsize, bool maximal, clique_options* opts) const {
+    inline size_t apply_to_cliques(size_t minsize, size_t maxsize, bool maximal,
+            clique_options* opts) const {
         return static_cast<size_t>(clique_unweighted_find_all(
             static_cast<cliquer_graph_t*>(*this),
             minsize, maxsize, maximal, opts
         ));
     }
-
-    typedef std::function<bool(const std::vector<Vertex>&)> CliqueCallback;
 
     /// \brief Apply some callback to every generated clique.
     ///
@@ -741,7 +826,23 @@ public:
     ///
     /// **Example**:
     /// \include cliquer.cpp
-    size_t apply_to_cliques(size_t minsize, size_t maxsize, bool maximal, CliqueCallback callback) const;
+    size_t apply_to_cliques(size_t minsize, size_t maxsize, bool maximal,
+            std::function<bool(const Cliquer::Set&)> callback) const;
+
+    /// \brief Apply some callback to every generated clique.
+    ///
+    /// Uses `clique_unweighted_find_all` from `cliquer`.
+    /// \param minsize A lower bound on the cliques to generate.
+    /// Set to 0 if no lower bound is provided.
+    /// \param maxsize An upper bound on the cliques to generate.
+    /// If minsize is 0 and maxsize is 0, then all cliques are considered.
+    /// \param maximal `true` if only maximal cliques must be considered.
+    /// \param callback The function to apply on every clique.
+    ///
+    /// **Example**:
+    /// \include cliquer.cpp
+    size_t apply_to_cliques(size_t minsize, size_t maxsize, bool maximal,
+            std::function<bool(const std::vector<Vertex>&)> callback) const;
 
     /// \brief Generate all cliques from a graph.
     ///
@@ -750,7 +851,8 @@ public:
     ///
     /// **Example**:
     /// \include cliquer.cpp
-    std::vector<std::vector<Vertex>> get_all_cliques(size_t minsize, size_t maxsize, bool maximal) const;
+    std::vector<Cliquer::Set> get_all_cliques(size_t minsize, size_t maxsize,
+            bool maximal) const;
 
     friend class EdgeIterator;
     friend class NautyContainer;
@@ -1171,21 +1273,6 @@ private:
 /// See Graph.
 typedef ContainerBuffer<Graph> NautyContainerBuffer;
 
-#ifndef OSTREAM_LL_GRAPH
-#define OSTREAM_LL_GRAPH
-static std::ostream& operator<<(std::ostream& os, const Graph& G) {
-    os << "Graph(";
-    bool first{true};
-    for(auto [v, w] : G.edges()) {
-        if(first)
-            first = false;
-        else
-            os << ", ";
-        os << v << "-" << w;
-    }
-    return os << ")";
-}
-#endif
 
 /// \brief Container of multiple inter-thread buffers.
 ///
@@ -1247,7 +1334,7 @@ public:
     void run() {
         while(true) {
             try {
-                Graph G{std::move(_buffer->pop())};
+                Graph G{_buffer->pop()};
                 (*this)(G);
             } catch(NautyContainerBuffer::EmptyBuffer&) {
                 break;
@@ -1278,7 +1365,8 @@ public:
         if(_buffer->_writable)
             throw std::runtime_error("Destroying a worker with a readable buffer.");
         if(_buffer->read_size() > 0)
-            std::cerr << "Destroying worker with read buffer size " << _buffer->read_size() << std::endl;
+            std::cerr << "Destroying worker with read buffer size "
+                      << _buffer->read_size() << std::endl;
     }
 #else
     ~NautyWorker() = default;
@@ -1423,11 +1511,11 @@ private:
     NautyParameters parameters;
 
     inline std::thread start_nauty() {
-        std::thread ret{std::move(
+        std::thread ret{
             parameters.tree
             ? start_gentreeg()
             : start_geng()
-        )};
+        };
         rename_thread(
             ret,
             parameters.tree
@@ -1519,7 +1607,37 @@ private:
         Nauty::get_container()->set_over();
     }
 };
+}  // namespace nautypp
 
+#ifdef OSTREAM_LL_GRAPH
+static std::ostream& operator<<(std::ostream& os, const nautypp::Graph& G) {
+    os << "Graph(";
+    bool first{true};
+    for(auto [v, w] : G.edges()) {
+        if(first)
+            first = false;
+        else
+            os << ", ";
+        os << v << "-" << w;
+    }
+    return os << ")";
 }
+#endif
+#ifdef OSTREAM_LL_CLIQUE
+static std::ostream& operator<<(std::ostream& os, const nautypp::Cliquer::Set& S) {
+    os << '{';
+    bool first{true};
+    for(auto v : S) {
+        if(first)
+            first = false;
+        else
+            os << ", ";
+        os << v;
+        /*std::string buffer;
+        std::getline(std::cin, buffer);*/
+    }
+    return os << '}';
+}
+#endif
 
 #endif

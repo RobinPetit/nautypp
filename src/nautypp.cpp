@@ -155,42 +155,35 @@ Graph Graph::complement() const {
     return ret;
 }
 
-static inline std::vector<Vertex> cliquer_set_to_vector(const set_t set) {
-    size_t size{set_size(set)};
-    std::vector<Vertex> ret;
-    ret.reserve(size);
-    for(Vertex v{0}; v < SET_MAX_SIZE(set); ++v)
-        if(SET_CONTAINS(set, v))
-            ret.push_back(v);
-    return ret;
-}
-
-std::vector<Vertex> Graph::find_some_clique(size_t minsize, size_t maxsize, bool maximal) const {
+Cliquer::Set Graph::find_some_clique(
+        size_t minsize, size_t maxsize,
+        bool maximal) const {
     cliquer_graph_t* graph{*this};
-    set_t clique = clique_unweighted_find_single(graph, minsize, maxsize, maximal, NULL);
-    auto ret{cliquer_set_to_vector(clique)};
+    set_t clique = clique_unweighted_find_single(
+        graph, minsize, maxsize, maximal, NULL
+    );
+    Cliquer::Set ret{clique};
     set_free(clique);
     return ret;
 }
 
 template <typename T>
-static inline std::remove_reference_t<std::remove_cv_t<T>>& _get_user_data_as_ref(clique_options* opts) {
+static inline std::remove_reference_t<std::remove_cv_t<T>>&
+_get_user_data_as_ref(clique_options* opts) {
     return *static_cast<std::remove_reference_t<std::remove_cv_t<T>>*>(
         opts->user_data
     );
 }
 
-typedef std::vector<Vertex> Clique;
-typedef std::vector<Clique> VectorOfCliques;
-
-static inline boolean _add_clique(set_t clique, cliquer_graph_t* graph, clique_options* opts) {
-    auto& all_cliques{_get_user_data_as_ref<VectorOfCliques>(opts)};
-    all_cliques.push_back(cliquer_set_to_vector(clique));
+static inline boolean _add_clique(set_t clique, cliquer_graph_t*, clique_options* opts) {
+    _get_user_data_as_ref<std::vector<Cliquer::Set>>(opts).push_back(
+        clique
+    );
     return true;
 }
 
-std::vector<std::vector<Vertex>> Graph::get_all_cliques(size_t minsize, size_t maxsize, bool maximal) const {
-    std::vector<std::vector<Vertex>> cliques;
+std::vector<Cliquer::Set> Graph::get_all_cliques(size_t minsize, size_t maxsize, bool maximal) const {
+    std::vector<Cliquer::Set> cliques;
     clique_options opts = {
         .reorder_function=NULL,
         .reorder_map=NULL,
@@ -208,18 +201,21 @@ std::vector<std::vector<Vertex>> Graph::get_all_cliques(size_t minsize, size_t m
     return cliques;
 }
 
-static inline boolean _callback(set_t clique, cliquer_graph_t*, clique_options* opts) {
-    auto& callback{_get_user_data_as_ref<std::function<bool(const Clique&)>>(opts)};
-    return callback(cliquer_set_to_vector(clique));
+static inline boolean _set_callback(set_t clique, cliquer_graph_t*, clique_options* opts) {
+    typedef std::function<bool(const Cliquer::Set&)> SetCallback;
+    return _get_user_data_as_ref<SetCallback>(opts)(
+        clique
+    );
 }
 
-size_t Graph::apply_to_cliques(size_t minsize, size_t maxsize, bool maximal, CliqueCallback callback) const {
+size_t Graph::apply_to_cliques(size_t minsize, size_t maxsize, bool maximal,
+        std::function<bool(const Cliquer::Set&)> callback) const {
     clique_options opts = {
         .reorder_function=NULL,
         .reorder_map=NULL,
         .time_function=NULL,
         .output=NULL,
-        .user_function=_callback,
+        .user_function=_set_callback,
         .user_data=&callback,
         .clique_list=NULL,
         .clique_list_length=0
@@ -230,15 +226,28 @@ size_t Graph::apply_to_cliques(size_t minsize, size_t maxsize, bool maximal, Cli
     );
 }
 
-/***** properties *****/
-
-/*
-NautyIterator NautyIterable::begin() const {
-    return NautyIterator(*Nauty::get_container().get(), buffer_size, false);
+static inline boolean _vector_callback(set_t clique, cliquer_graph_t*, clique_options* opts) {
+    typedef std::function<bool(const std::vector<Vertex>&)> VectorCallback;
+    return _get_user_data_as_ref<VectorCallback>(opts)(
+        static_cast<std::vector<Vertex>>(Cliquer::Set(clique))
+    );
 }
 
-NautyIterator NautyIterable::end() const {
-    return NautyIterator(*Nauty::get_container().get(), buffer_size, true);
+size_t Graph::apply_to_cliques(size_t minsize, size_t maxsize, bool maximal,
+        std::function<bool(const std::vector<Vertex>&)> callback) const {
+    clique_options opts = {
+        .reorder_function=NULL,
+        .reorder_map=NULL,
+        .time_function=NULL,
+        .output=NULL,
+        .user_function=_vector_callback,
+        .user_data=&callback,
+        .clique_list=NULL,
+        .clique_list_length=0
+    };
+    return clique_unweighted_find_all(
+        static_cast<cliquer_graph_t*>(*this),
+        minsize, maxsize, maximal, &opts
+    );
 }
-*/
-}
+}  // namespace nautypp
