@@ -2,6 +2,7 @@ CC=g++
 FLAGS=-std=c++20 -g -O0 -Wall -Wextra -I ~/includes/ -L ~/lib/ -lnautypp -pthread
 
 EXAMPLES=bin/multithreaded_count_triangle_free_graphs bin/multithreaded_heavy_callback \
+		 bin/multithreaded_cliquer \
          bin/iterators_neighbours bin/degree_degrees \
 		 bin/cliquer
 

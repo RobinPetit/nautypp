@@ -5,8 +5,14 @@ lib/
 
 doc/
 
+## clangd lint
+.cache/
+
 # Vim
 *.swp
 
 # C++
 *.o
+
+# LSP
+compile_commands.json

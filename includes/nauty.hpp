@@ -7,13 +7,10 @@
 
 #include <algorithm>
 #include <bit>
-#include <chrono>
 #include <cmath>
-#include <condition_variable>
 #include <functional>
 #include <iostream>
-#include <list>
-#include <mutex>
+#include <memory>
 #include <thread>
 #include <vector>
 
@@ -21,6 +18,8 @@
 #include <pthread.h>
 #endif
 
+/* C's _Thread_local is called thread_local in C++ */
+#define _Thread_local thread_local
 #include <nauty/gtools.h>
 
 /************/
@@ -909,7 +908,7 @@ public:
             throw std::runtime_error("Wrong dimensions for adjacency matrix");
         Graph ret(V);
         for(Vertex v{1}; v < V; ++v)
-            for(Vertex w{0}; w < v; ++V)
+            for(Vertex w{0}; w < v; ++w)
                 if(A.at(v*V + w))
                     ret.link(v, w);
         return ret;
@@ -1258,6 +1257,10 @@ private:
         }
     }
 
+    friend class BaseNautyWorker;
+    template <GraphFunctionType Callback>
+    friend class NautyWorker;
+
     /* NO LOCK IS PERFORMED HERE! */
     inline size_t read_size() const {
         return _read_buffer.size();
@@ -1279,14 +1282,12 @@ typedef ContainerBuffer<Graph> NautyContainerBuffer;
 /// See NautyContainerBuffer.
 class NautyContainer {
 public:
-    NautyContainer():
-            _done{false}, _worker_buffers(),
-            _buffer_idx{0} {
+    NautyContainer(): _worker_buffers() {
     }
 
     inline std::shared_ptr<NautyContainerBuffer> add_new_buffer(size_t buffer_size) {
         _worker_buffers.push_back(
-            std::move(std::make_shared<NautyContainerBuffer>(buffer_size))
+            std::make_shared<NautyContainerBuffer>(buffer_size)
         );
         return _worker_buffers.back();
     }
@@ -1311,9 +1312,7 @@ public:
     friend class Nauty;
 private:
     typedef std::vector<std::shared_ptr<NautyContainerBuffer>> ContainerVector;
-    bool            _done;
     ContainerVector _worker_buffers;
-    size_t          _buffer_idx;
 
     inline void set_over() {
         for(auto& buffer : _worker_buffers)
@@ -1362,7 +1361,7 @@ public:
 
 #ifdef NAUTYPP_DEBUG
     ~NautyWorker() noexcept(false) {
-        if(_buffer->_writable)
+        if(_buffer->writable())
             throw std::runtime_error("Destroying a worker with a readable buffer.");
         if(_buffer->read_size() > 0)
             std::cerr << "Destroying worker with read buffer size "
@@ -1473,7 +1472,7 @@ public:
     template <GraphRefFunctionType Callback>
     auto run_async(
             size_t nb_workers=std::thread::hardware_concurrency(),
-            size_t worker_buffer_size=5'000) -> Callback::ResultType {
+            size_t worker_buffer_size=5'000) -> typename Callback::ResultType {
         Nauty::reset_container();
         std::vector<NautyWorkerWrapper<Callback>> wrappers;
         std::vector<std::thread> workers;
@@ -1633,8 +1632,6 @@ static std::ostream& operator<<(std::ostream& os, const nautypp::Cliquer::Set& S
         else
             os << ", ";
         os << v;
-        /*std::string buffer;
-        std::getline(std::cin, buffer);*/
     }
     return os << '}';
 }

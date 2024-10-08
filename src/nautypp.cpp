@@ -1,7 +1,3 @@
-#include <string>
-#include <iostream>
-#include <bitset>
-
 #include "nauty.hpp"
 
 using namespace nautypp;
@@ -229,7 +225,7 @@ size_t Graph::apply_to_cliques(size_t minsize, size_t maxsize, bool maximal,
 static inline boolean _vector_callback(set_t clique, cliquer_graph_t*, clique_options* opts) {
     typedef std::function<bool(const std::vector<Vertex>&)> VectorCallback;
     return _get_user_data_as_ref<VectorCallback>(opts)(
-        static_cast<std::vector<Vertex>>(Cliquer::Set(clique))
+        static_cast<std::vector<Vertex>>(Cliquer::Set(clique, false))
     );
 }
 

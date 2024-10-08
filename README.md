@@ -10,6 +10,9 @@ See the repo on [GitHub](https://github.com/RobinPetit/nautypp).
 ## Install
 
 Be sure you have downloaded and compiled `nauty` at first (see the README in the downloaded zip for more informations).
+**Remark:** when executing `./configure`, be sure to provide the parameter `--enable-tls` to enable *thread local storage*
+and to make sure that nauty behaves as expected in a multithreaded context!
+
 Your environment variable `CPATH` must also contain a path to a directory containing a subdirectory `nauty` containing
 all the headers of the `nauty` source code.
 

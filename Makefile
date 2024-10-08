@@ -1,4 +1,4 @@
-CXXFLAGS=-Wall -Wextra -std=c++20 -MMD -fPIC -pthread -fconcepts-diagnostics-depth=3 -Iincludes/ -I./
+CXXFLAGS=-D_Thread_local=thread_local -DHAVE_TLS -Wall -Wextra -std=c++20 -MMD -fPIC -pthread -fconcepts-diagnostics-depth=3 -Iincludes/ -I./
 CXXDEBUGFLAGS=-g -DNAUTYPP_DEBUG
 CXXRELEASEFLAGS=-O3
 
@@ -34,19 +34,19 @@ lib/%/libnautypp.a: obj/%/nautypp.o obj/nauty/geng.o obj/nauty/gentreeg.o ${NAUT
 
 obj/debug/%.o: src/%.cpp
 	$(ensure_dir)
-	g++ -c -o $@ $(CXXFLAGS) $(CXXDEBUGFLAGS) $<
+	${CXX} -c -o $@ $(CXXFLAGS) $(CXXDEBUGFLAGS) $<
 
 obj/release/%.o: src/%.cpp
 	$(ensure_dir)
-	g++ -c -o $@ $(CXXFLAGS) $(CXXRELEASEFLAGS) $<
+	${CXX} -c -o $@ $(CXXFLAGS) $(CXXRELEASEFLAGS) $<
 
 obj/nauty/geng.o: ${NAUTY_SRC_PATH}/geng.c
 	$(ensure_dir)
-	g++ -c -o $@ $< $(CXXFLAGS) -DGENG_MAIN=_geng_main -DOUTPROC=_geng_callback
+	${CXX} -c -o $@ $< $(CXXFLAGS) -DGENG_MAIN=_geng_main -DOUTPROC=_geng_callback
 
 obj/nauty/gentreeg.o: ${NAUTY_SRC_PATH}/gentreeg.c
 	$(ensure_dir)
-	g++ -c -o $@ $< $(CXXFLAGS) -DGENTREEG_MAIN=_gentreeg_main -DOUTPROC=_gentreeg_callback
+	${CXX} -c -o $@ $< $(CXXFLAGS) -DGENTREEG_MAIN=_gentreeg_main -DOUTPROC=_gentreeg_callback
 
 -include obj/**/*.d
 
