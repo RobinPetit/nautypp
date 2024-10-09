@@ -8,8 +8,12 @@ NAUTY_DEPENDENCIES=${NAUTY_SRC_PATH}/gtnauty.o ${NAUTY_SRC_PATH}/gtools.o ${NAUT
                    ${NAUTY_SRC_PATH}/naututil.o ${NAUTY_SRC_PATH}/nautycliquer.o ${NAUTY_SRC_PATH}/nauty.o \
                    ${NAUTY_SRC_PATH}/schreier.o ${NAUTY_SRC_PATH}/traces.o
 
+ifeq (${INSTALL_INCLUDES_PATH},)
 INSTALL_INCLUDES_PATH=~/includes/nautypp/
+endif
+ifeq (${INSTALL_LIB_PATH},)
 INSTALL_LIB_PATH=~/lib/
+endif
 
 DOC_DIR=doc/
 REMOTE_ORIGIN=git@github.com:RobinPetit/nautypp.git

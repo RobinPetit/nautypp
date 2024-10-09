@@ -149,6 +149,16 @@ Graph& Graph::operator=(Graph&& other) {
     return *this;
 }
 
+Graph Graph::disjoint_union(const Graph& G1, const Graph& G2) {
+    size_t new_size{G1.V() + G2.V()};
+    Graph ret(new_size);
+    for(auto [v, w] : G1.edges())
+        ret.add_edge(v, w);
+    for(auto [v, w] : G2.edges())
+        ret.add_edge(v+G1.V(), w+G1.V());
+    return ret;
+}
+
 inline void _nauty_complement(graph* g, int m, int n) {
     complement(g, m, n);
 }
@@ -254,4 +264,24 @@ size_t Graph::apply_to_cliques(size_t minsize, size_t maxsize, bool maximal,
         minsize, maxsize, maximal, &opts
     );
 }
+
+template <typename T>
+static inline T pop_from(std::vector<T>& v) {
+    T&& ret{std::move(v.back())};
+    v.pop_back();
+    return ret;
+}
+
+void ConnectedComponents::_run(Vertex v) {
+    std::vector<Vertex> stack;
+    stack.push_back(v);
+    while(not stack.empty()) {
+        auto v{pop_from(stack)};
+        ids[v] = nb_components;
+        for(auto [_, w] : G.edges(v))
+            if(ids[w] == UNVISITED)
+                stack.push_back(w);
+    }
+}
+
 }  // namespace nautypp

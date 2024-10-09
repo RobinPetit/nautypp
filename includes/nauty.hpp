@@ -10,7 +10,9 @@
 #include <cmath>
 #include <functional>
 #include <iostream>
+#include <limits>
 #include <memory>
+#include <stdexcept>
 #include <thread>
 #include <vector>
 
@@ -150,8 +152,41 @@ private:
 };
 }
 
-
 class Graph;
+
+class ConnectedComponents {
+public:
+    ConnectedComponents() = delete;
+    inline ConnectedComponents(const Graph& graph);
+
+    inline size_t get_nb_components() const {
+        return nb_components;
+    }
+    inline size_t get_component_identifier_of(Vertex v) const {
+        _verify_exists(v);
+        return ids[v];
+    }
+    inline std::vector<Vertex> get_component_of(Vertex v) const {
+        std::vector<Vertex> ret;
+        ret.reserve(ids.size());
+        for(Vertex w{0}; w < ids.size(); ++w)
+            if(ids[w] == ids[v])
+                ret.push_back(w);
+        return ret;
+    }
+private:
+    static constexpr size_t UNVISITED{std::numeric_limits<size_t>::max()};
+    const Graph& G;
+    std::vector<size_t> ids;
+    size_t nb_components;
+
+    inline void _run();
+    void _run(Vertex v);
+    inline void _verify_exists(Vertex v) const {
+        if(v >= ids.size())
+            throw std::runtime_error("Vertex does not exist");
+    }
+};
 
 /// \struct NautyParameters
 /// \brief Wrapper for the parameters given to geng/gentreeg
@@ -773,6 +808,30 @@ public:
         degrees[v].set_stale();
         nb_edges.set_stale();
         _as_cliquer.set_stale();
+    }
+
+    /// \brief Create a new graph corresponding to the vertex-disjoint union with another graph.
+    ///
+    /// \param other The other graph in the disjoint union
+    /// \return The union of `*this` and `other`.
+    inline Graph disjoint_union(const Graph& other) const {
+        return Graph::disjoint_union(*this, other);
+    }
+
+    static Graph disjoint_union(const Graph& G1, const Graph& G2);
+
+    /// \brief count the number of connected components.
+    ///
+    /// \return The number of conneced components of the graph.
+    inline size_t nb_connected_components() const {
+        return ConnectedComponents(*this).get_nb_components();
+    }
+
+    /// Get the connected components of the graph.
+    ///
+    /// See ConnectedComponents
+    inline ConnectedComponents get_connected_components() const {
+        return ConnectedComponents(*this);
     }
 
     // Cliquer
@@ -1622,6 +1681,21 @@ private:
         Nauty::get_container()->set_over();
     }
 };
+
+ConnectedComponents::ConnectedComponents(const Graph& graph):
+        G{graph}, ids(graph.V(), UNVISITED), nb_components{0} {
+    _run();
+}
+
+void ConnectedComponents::_run() {
+    for(Vertex v{0}; v < G.V(); ++v) {
+        if(ids[v] == UNVISITED) {
+            _run(v);
+            ++nb_components;
+        }
+    }
+}
+
 }  // namespace nautypp
 
 #ifdef OSTREAM_LL_GRAPH
