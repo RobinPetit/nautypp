@@ -13,7 +13,7 @@ using namespace nautypp;
 int main() {
     NautyParameters params{
         .tree=false,
-        .connected=true,
+        .connected=false,
         .V=3,
         .Vmax=10
     };

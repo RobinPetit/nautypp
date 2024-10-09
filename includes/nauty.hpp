@@ -204,6 +204,7 @@ class EdgeIterator {
 public:
     EdgeIterator() = delete;
     EdgeIterator(const Graph&, Vertex vertex, bool end=false);
+    EdgeIterator(const Graph&, Vertex vertex, setword Nv);
     inline bool operator==(const EdgeIterator&) const;
     inline bool operator!=(const EdgeIterator&) const;
     inline EdgeIterator& operator=(EdgeIterator&& other);
@@ -234,6 +235,16 @@ private:
     EdgeIterator it;
 
     inline void next();
+
+    /// MASKS[i] = (0xFF...FF) >> (i+1)
+    static constexpr std::array<setword, WORDSIZE> MASKS{[]{
+        std::array<setword, WORDSIZE> ret{};
+        auto value{static_cast<setword>(-1)};
+        for(size_t i{0}; i < WORDSIZE; ++i)
+            ret[i] = (value >>= 1);
+        //setword value{-1};
+        return ret;
+    }()};
 };
 
 /// \class Edges
@@ -854,6 +865,7 @@ public:
             bool maximal) const;
 
     friend class EdgeIterator;
+    friend class AllEdgeIterator;
     friend class NautyContainer;
     friend class EdgeProperty;
     friend class DegreeProperty;
@@ -1099,17 +1111,21 @@ bool AllEdgeIterator::operator!=(const AllEdgeIterator& other) const {
 }
 
 AllEdgeIterator& AllEdgeIterator::operator++() {
-    do {
-        next();
-    } while((*it).first > (*it).second);
+    next();
     return *this;
 }
 
 void AllEdgeIterator::next() {
     ++it;
     auto [v, w] = *it;
-    if(w == WORDSIZE and v+1 < graph.V())
-        it = EdgeIterator(graph, v+1, false);
+    while(w == WORDSIZE and v+1 < graph.V()) {
+        ++v;
+        it = EdgeIterator(
+            graph, v,
+            *GRAPHROW(graph.g, v, graph.__get_m()) & MASKS[v]
+        );
+        std::tie(v, w) = *it;
+    }
 }
 
 std::pair<Vertex, Vertex> AllEdgeIterator::operator*() const {

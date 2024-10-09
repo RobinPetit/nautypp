@@ -28,9 +28,17 @@ EdgeIterator::EdgeIterator(const Graph& G, Vertex vertex, bool end):
         } {
     ++*this;
 }
+EdgeIterator::EdgeIterator(const Graph& G, Vertex vertex, setword Nv):
+        graph{G},
+        v{vertex}, w{0},
+        gv{Nv} {
+    ++*this;
+}
 
 AllEdgeIterator::AllEdgeIterator(const Graph& G, bool end):
         graph{G}, it(G, end ? G.V()-1 : 0, end) {
+    if((*it).second == WORDSIZE)
+        next();
 }
 
 /***** Edges *****/
