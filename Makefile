@@ -1,5 +1,6 @@
-CXXFLAGS=-D_Thread_local=thread_local -DHAVE_TLS -Wall -Wextra -std=c++20 -MMD -fPIC -pthread -fconcepts-diagnostics-depth=3 -Iincludes/ -I./
-CXXDEBUGFLAGS=-g -DNAUTYPP_DEBUG
+CXXFLAGS=-D_Thread_local=thread_local -DHAVE_TLS -Wall -Wextra -std=c++20 -MMD \
+		 -fPIC -pthread -fconcepts-diagnostics-depth=3 -Iincludes/
+CXXDEBUGFLAGS=-g -DNAUTYPP_DEBUG -fsanitize=address
 CXXRELEASEFLAGS=-O3
 
 NAUTY_DEPENDENCIES=${NAUTY_SRC_PATH}/gtnauty.o ${NAUTY_SRC_PATH}/gtools.o ${NAUTY_SRC_PATH}/gutil2.o \
@@ -26,13 +27,13 @@ build_release: lib/release/libnautypp.a
 
 install_release: build_release
 	mkdir -p ${INSTALL_LIB_PATH} && cp lib/release/libnautypp.a ${INSTALL_LIB_PATH}
-	mkdir -p ${INSTALL_INCLUDES_PATH} && cp includes/*.hpp ${INSTALL_INCLUDES_PATH}
+	mkdir -p ${INSTALL_INCLUDES_PATH} && cp includes/nautypp/*.hpp ${INSTALL_INCLUDES_PATH}
 
 install_debug: build_debug
 	mkdir -p ${INSTALL_LIB_PATH} && cp lib/debug/libnautypp.a ${INSTALL_LIB_PATH}
-	mkdir -p ${INSTALL_INCLUDES_PATH} && cp includes/*.hpp ${INSTALL_INCLUDES_PATH}
+	mkdir -p ${INSTALL_INCLUDES_PATH} && cp includes/nautypp/*.hpp ${INSTALL_INCLUDES_PATH}
 
-lib/%/libnautypp.a: obj/%/nautypp.o obj/nauty/geng.o obj/nauty/gentreeg.o ${NAUTY_DEPENDENCIES} includes/nauty.hpp ${NAUTY_SRC_PATH}/nauty.a
+lib/%/libnautypp.a: obj/%/nautypp.o obj/nauty/geng.o obj/nauty/gentreeg.o ${NAUTY_DEPENDENCIES} includes/nautypp/nauty.hpp ${NAUTY_SRC_PATH}/nauty.a
 	$(ensure_dir)
 	ar rvs $@ $(filter %.o,$^) $(filter %.a,$^)
 

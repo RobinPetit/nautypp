@@ -1,4 +1,4 @@
-#include "nauty.hpp"
+#include "nautypp/nauty.hpp"
 
 using namespace nautypp;
 

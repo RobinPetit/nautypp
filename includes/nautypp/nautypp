@@ -1,0 +1,6 @@
+#ifndef __NAUTYPP__
+#define __NAUTYPP__
+
+#include <nautypp/nauty.hpp>
+
+#endif
