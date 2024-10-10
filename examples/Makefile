@@ -1,5 +1,5 @@
 CC=g++
-FLAGS=-std=c++20 -g -O0 -Wall -Wextra -I ~/includes/ -L ~/lib/ -lnautypp -pthread
+FLAGS=-std=c++20 -g -O0 -Wall -Wextra -I ~/includes/ -L ~/lib/ -lnautypp -pthread -fsanitize=address
 
 EXAMPLES=bin/multithreaded_count_triangle_free_graphs bin/multithreaded_heavy_callback \
 		 bin/multithreaded_cliquer \

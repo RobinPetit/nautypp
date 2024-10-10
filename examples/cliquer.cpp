@@ -85,9 +85,11 @@ int main() {
     // opts.clique_list = (set_t*)malloc(10*sizeof(set_t));
     std::cout << "\nUsing the original cliquer interface. Only 10 cliques are stored (by choice):\n";
     K5.apply_to_cliques(3, K5.V(), false, &opts);
-    for(int i{0}; i < opts.clique_list_length; ++i)
+    for(int i{0}; i < opts.clique_list_length; ++i) {
         set_print(opts.clique_list[i]);
-    delete opts.clique_list;
+        set_free(opts.clique_list[i]);
+    }
+    delete[] opts.clique_list;
     // or
     // free(opts.clique_list);
     }
