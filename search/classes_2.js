@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['basenautyworker_88',['BaseNautyWorker',['../classnautypp_1_1BaseNautyWorker.html',1,'nautypp']]]
+  ['emptybuffer_80',['EmptyBuffer',['../classnautypp_1_1ContainerBuffer_1_1EmptyBuffer.html',1,'nautypp::ContainerBuffer']]]
 ];

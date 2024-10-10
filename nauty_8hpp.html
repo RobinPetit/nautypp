@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Nautypp: includes/nauty.hpp File Reference</title>
+<title>Nautypp: includes/nautypp/nauty.hpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -63,7 +63,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_09e761304027c904456130627fd4dcf5.html">includes</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_09e761304027c904456130627fd4dcf5.html">includes</a></li><li class="navelem"><a class="el" href="dir_de1cdda6f10353d73bd9f41a7396e762.html">nautypp</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -73,8 +73,7 @@ $(function() {
 <a href="#define-members">Macros</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
-<a href="#func-members">Functions</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">nauty.hpp File Reference</div>  </div>
 </div><!--header-->
@@ -83,37 +82,41 @@ $(function() {
 <p>Wrapper for nauty's geng and gentreeg in C++.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;algorithm&gt;</code><br />
-<code>#include &lt;bit&gt;</code><br />
-<code>#include &lt;chrono&gt;</code><br />
 <code>#include &lt;cmath&gt;</code><br />
-<code>#include &lt;condition_variable&gt;</code><br />
 <code>#include &lt;functional&gt;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
-<code>#include &lt;list&gt;</code><br />
-<code>#include &lt;mutex&gt;</code><br />
+<code>#include &lt;limits&gt;</code><br />
+<code>#include &lt;memory&gt;</code><br />
 <code>#include &lt;thread&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;nauty/gtools.h&gt;</code><br />
-<code>#include &lt;nauty/nautycliquer.h&gt;</code><br />
+<code>#include &lt;nautypp/algorithms.hpp&gt;</code><br />
+<code>#include &lt;nautypp/aliases.hpp&gt;</code><br />
+<code>#include &lt;nautypp/cliquer.hpp&gt;</code><br />
+<code>#include &lt;nautypp/graph.hpp&gt;</code><br />
+<code>#include &lt;nautypp/impl.hpp&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for nauty.hpp:</div>
 <div class="dyncontent">
-<div class="center"><img src="nauty_8hpp__incl.png" border="0" usemap="#aincludes_2nauty_8hpp" alt=""/></div>
-<map name="aincludes_2nauty_8hpp" id="aincludes_2nauty_8hpp">
-<area shape="rect" title="Wrapper for nauty&#39;s geng and gentreeg in C++." alt="" coords="603,5,746,32"/>
-<area shape="rect" title=" " alt="" coords="5,80,91,107"/>
-<area shape="rect" title=" " alt="" coords="115,80,154,107"/>
-<area shape="rect" title=" " alt="" coords="179,80,245,107"/>
-<area shape="rect" title=" " alt="" coords="270,80,333,107"/>
-<area shape="rect" title=" " alt="" coords="357,80,499,107"/>
-<area shape="rect" title=" " alt="" coords="523,80,610,107"/>
-<area shape="rect" title=" " alt="" coords="635,80,715,107"/>
-<area shape="rect" title=" " alt="" coords="739,80,781,107"/>
-<area shape="rect" title=" " alt="" coords="805,80,869,107"/>
-<area shape="rect" title=" " alt="" coords="893,80,957,107"/>
-<area shape="rect" title=" " alt="" coords="982,80,1045,107"/>
-<area shape="rect" title=" " alt="" coords="1069,80,1184,107"/>
-<area shape="rect" title=" " alt="" coords="1208,80,1363,107"/>
+<div class="center"><img src="nauty_8hpp__incl.png" border="0" usemap="#aincludes_2nautypp_2nauty_8hpp" alt=""/></div>
+<map name="aincludes_2nautypp_2nauty_8hpp" id="aincludes_2nautypp_2nauty_8hpp">
+<area shape="rect" title="Wrapper for nauty&#39;s geng and gentreeg in C++." alt="" coords="669,5,869,32"/>
+<area shape="rect" title=" " alt="" coords="5,155,91,181"/>
+<area shape="rect" title=" " alt="" coords="690,80,753,107"/>
+<area shape="rect" title=" " alt="" coords="115,155,202,181"/>
+<area shape="rect" title=" " alt="" coords="777,80,857,107"/>
+<area shape="rect" title=" " alt="" coords="881,80,940,107"/>
+<area shape="rect" title=" " alt="" coords="964,80,1041,107"/>
+<area shape="rect" title=" " alt="" coords="1065,80,1129,107"/>
+<area shape="rect" title=" " alt="" coords="1154,80,1217,107"/>
+<area shape="rect" title=" " alt="" coords="1241,80,1356,107"/>
+<area shape="rect" title=" " alt="" coords="226,155,403,181"/>
+<area shape="rect" title=" " alt="" coords="813,155,966,181"/>
+<area shape="rect" title=" " alt="" coords="990,155,1141,181"/>
+<area shape="rect" href="graph_8hpp_source.html" title=" " alt="" coords="420,80,564,107"/>
+<area shape="rect" title=" " alt="" coords="1380,80,1516,107"/>
+<area shape="rect" title=" " alt="" coords="625,155,788,181"/>
+<area shape="rect" title=" " alt="" coords="428,155,601,181"/>
 </map>
 </div>
 </div>
@@ -123,29 +126,6 @@ Include dependency graph for nauty.hpp:</div>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnautypp_1_1NautyParameters.html">nautypp::NautyParameters</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wrapper for the parameters given to geng/gentreeg.  <a href="structnautypp_1_1NautyParameters.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnautypp_1_1EdgeIterator.html">nautypp::EdgeIterator</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Iterator over edges incident to some vertex.  <a href="classnautypp_1_1EdgeIterator.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnautypp_1_1AllEdgeIterator.html">nautypp::AllEdgeIterator</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Iterator over all edges of a graph.  <a href="classnautypp_1_1AllEdgeIterator.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnautypp_1_1Edges.html">nautypp::Edges</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Iterable over all edges incident to some vertex.  <a href="classnautypp_1_1Edges.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnautypp_1_1AllEdges.html">nautypp::AllEdges</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Iterable over all edges of a graph.  <a href="classnautypp_1_1AllEdges.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnautypp_1_1ComputableProperty.html">nautypp::ComputableProperty&lt; T &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnautypp_1_1EdgeProperty.html">nautypp::EdgeProperty</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnautypp_1_1DegreeProperty.html">nautypp::DegreeProperty</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnautypp_1_1__CliquerGraphProperty.html">nautypp::_CliquerGraphProperty</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnautypp_1_1Graph.html">nautypp::Graph</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wrapper of nauty's graphs.  <a href="classnautypp_1_1Graph.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnautypp_1_1ContainerBuffer.html">nautypp::ContainerBuffer&lt; T &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Communication buffer between producer and consumer threads.  <a href="classnautypp_1_1ContainerBuffer.html#details">More...</a><br /></td></tr>
@@ -173,30 +153,12 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a1ac41480eb2e4aadd52252ee550b630a"><td class="memItemLeft" align="right" valign="top"><a id="a1ac41480eb2e4aadd52252ee550b630a"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>new</b>&#160;&#160;&#160;__new_var__</td></tr>
-<tr class="separator:a1ac41480eb2e4aadd52252ee550b630a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad3a606b2415cc9127bbb52d8ed5d3191"><td class="memItemLeft" align="right" valign="top"><a id="ad3a606b2415cc9127bbb52d8ed5d3191"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>calloc</b>(n,  s)&#160;&#160;&#160;(set_t)calloc((n), (s))</td></tr>
-<tr class="separator:ad3a606b2415cc9127bbb52d8ed5d3191"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec16837612cbbf40e6c2ea951c153296"><td class="memItemLeft" align="right" valign="top"><a id="aec16837612cbbf40e6c2ea951c153296"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>OSTREAM_LL_GRAPH</b></td></tr>
-<tr class="separator:aec16837612cbbf40e6c2ea951c153296"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ee13d5bcebab292dbc98e06c6cf9fe7"><td class="memItemLeft" align="right" valign="top"><a id="a6ee13d5bcebab292dbc98e06c6cf9fe7"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>_Thread_local</b>&#160;&#160;&#160;thread_local</td></tr>
+<tr class="separator:a6ee13d5bcebab292dbc98e06c6cf9fe7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:a97b63912a0f337ad8f4b48af5ad80e57"><td class="memItemLeft" align="right" valign="top"><a id="a97b63912a0f337ad8f4b48af5ad80e57"></a>
-typedef setword&#160;</td><td class="memItemRight" valign="bottom"><b>nautypp::xword</b></td></tr>
-<tr class="separator:a97b63912a0f337ad8f4b48af5ad80e57"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4cda44b1db17c6a55a49a077bfb95bf9"><td class="memItemLeft" align="right" valign="top"><a id="a4cda44b1db17c6a55a49a077bfb95bf9"></a>
-typedef graph&#160;</td><td class="memItemRight" valign="bottom"><b>nautypp::nauty_graph_t</b></td></tr>
-<tr class="separator:a4cda44b1db17c6a55a49a077bfb95bf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c75d00ff0d98fdf06e82bd89f64b89e"><td class="memItemLeft" align="right" valign="top"><a id="a3c75d00ff0d98fdf06e82bd89f64b89e"></a>
-typedef xword&#160;</td><td class="memItemRight" valign="bottom"><b>nautypp::Vertex</b></td></tr>
-<tr class="separator:a3c75d00ff0d98fdf06e82bd89f64b89e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b3c241bfaedb40c2db7b27847d6979d"><td class="memItemLeft" align="right" valign="top"><a id="a3b3c241bfaedb40c2db7b27847d6979d"></a>
-typedef graph_t&#160;</td><td class="memItemRight" valign="bottom"><b>nautypp::cliquer_graph_t</b></td></tr>
-<tr class="separator:a3b3c241bfaedb40c2db7b27847d6979d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3263d51ca94862affd5a59d74c03a352"><td class="memItemLeft" align="right" valign="top">typedef ContainerBuffer&lt; Graph &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacenautypp.html#a3263d51ca94862affd5a59d74c03a352">nautypp::NautyContainerBuffer</a></td></tr>
 <tr class="separator:a3263d51ca94862affd5a59d74c03a352"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -216,18 +178,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>_geng_main</b> (int, c
 <tr class="memitem:a577affad9c439a58b7a8310c741668e8"><td class="memItemLeft" align="right" valign="top"><a id="a577affad9c439a58b7a8310c741668e8"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>_gentreeg_main</b> (int, char **)</td></tr>
 <tr class="separator:a577affad9c439a58b7a8310c741668e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:a833c68a502e5da48a029ea17e6de1e20"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a833c68a502e5da48a029ea17e6de1e20"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><b>nautypp::GraphRefFunctionType</b></td></tr>
-<tr class="separator:a833c68a502e5da48a029ea17e6de1e20"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab83e6ef66230b64d85de3e41e07a07e5"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ab83e6ef66230b64d85de3e41e07a07e5"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><b>nautypp::GraphConstRefFunctionType</b></td></tr>
-<tr class="separator:ab83e6ef66230b64d85de3e41e07a07e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a1edf6da34ee16a1c3dfc0581346f36"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a5a1edf6da34ee16a1c3dfc0581346f36"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><b>nautypp::GraphFunctionType</b></td></tr>
-<tr class="separator:a5a1edf6da34ee16a1c3dfc0581346f36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Wrapper for nauty's geng and gentreeg in C++. </p>

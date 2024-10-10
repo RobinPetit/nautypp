@@ -71,7 +71,8 @@ $(function() {
 <p>See the repo on <a href="https://github.com/RobinPetit/nautypp">GitHub</a>.</p>
 <h1><a class="anchor" id="autotoc_md1"></a>
 Install</h1>
-<p>Be sure you have downloaded and compiled <code>nauty</code> at first (see the README in the downloaded zip for more informations). Your environment variable <code>CPATH</code> must also contain a path to a directory containing a subdirectory <code>nauty</code> containing all the headers of the <code>nauty</code> source code.</p>
+<p>Be sure you have downloaded and compiled <code>nauty</code> at first (see the README in the downloaded zip for more informations). <b>Remark:</b> when executing <code>./configure</code>, be sure to provide the parameter <code>--enable-tls</code> to enable <em>thread local storage</em> and to make sure that nauty behaves as expected in a multithreaded context!</p>
+<p>Your environment variable <code>CPATH</code> must also contain a path to a directory containing a subdirectory <code>nauty</code> containing all the headers of the <code>nauty</code> source code.</p>
 <p>Make sure you also have set an environment variable <code>NAUTY_SRC_PATH</code> containing the path to the source and compiled files of <code>nauty</code>. Example: <code>export NAUTY_SRC_PATH=~/includes/nauty/</code>.</p>
 <p>If you don't want/can't set an environment variable, you can add it as a variable in the Makefile.</p>
 <p>Compilation will create directories <code>./obj/</code> and <code>./lib/</code> for respectively object files and the compiled static libraries.</p>

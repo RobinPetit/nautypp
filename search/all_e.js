@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['perfect_73',['perfect',['../structnautypp_1_1NautyParameters.html#a80b7c09d935f70ab8ee118ff3481041e',1,'nautypp::NautyParameters']]],
-  ['pop_74',['pop',['../classnautypp_1_1ContainerBuffer.html#aff2260e85c78e4fc3d4a8f240dac44f3',1,'nautypp::ContainerBuffer']]],
-  ['push_75',['push',['../classnautypp_1_1ContainerBuffer.html#aa2e81bad4420b085d272d1967175c1cd',1,'nautypp::ContainerBuffer']]]
+  ['run_5fasync_69',['run_async',['../classnautypp_1_1Nauty.html#aa4f53cf95025db0708c3ab521ee137f8',1,'nautypp::Nauty::run_async(GraphFunction callback, size_t nb_workers=std::thread::hardware_concurrency(), size_t worker_buffer_size=5 &apos;000)'],['../classnautypp_1_1Nauty.html#ae8def166acae101c8ab6f376e4c682b9',1,'nautypp::Nauty::run_async(size_t nb_workers=std::thread::hardware_concurrency(), size_t worker_buffer_size=5 &apos;000) -&gt; typename Callback::ResultType']]]
 ];

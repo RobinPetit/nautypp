@@ -78,13 +78,16 @@ $(function() {
 <p>Iterator over edges incident to some vertex.  
  <a href="classnautypp_1_1EdgeIterator.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="nauty_8hpp_source.html">nauty.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="iterators_8hpp_source.html">iterators.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ad0318228ca95cae237ca19a149745862"><td class="memItemLeft" align="right" valign="top"><a id="ad0318228ca95cae237ca19a149745862"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>EdgeIterator</b> (const <a class="el" href="classnautypp_1_1Graph.html">Graph</a> &amp;, Vertex vertex, bool end=false)</td></tr>
 <tr class="separator:ad0318228ca95cae237ca19a149745862"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a7e66f210a26448d22638b8c6f2455c"><td class="memItemLeft" align="right" valign="top"><a id="a1a7e66f210a26448d22638b8c6f2455c"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>EdgeIterator</b> (const <a class="el" href="classnautypp_1_1Graph.html">Graph</a> &amp;, Vertex vertex, setword Nv)</td></tr>
+<tr class="separator:a1a7e66f210a26448d22638b8c6f2455c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af271456e6c888f68cc1396ff1915f29e"><td class="memItemLeft" align="right" valign="top"><a id="af271456e6c888f68cc1396ff1915f29e"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (const <a class="el" href="classnautypp_1_1EdgeIterator.html">EdgeIterator</a> &amp;) const</td></tr>
 <tr class="separator:af271456e6c888f68cc1396ff1915f29e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -105,7 +108,7 @@ std::pair&lt; Vertex, Vertex &gt;&#160;</td><td class="memItemRight" valign="bot
 <div class="textblock"><p>Iterator over edges incident to some vertex. </p>
 <p><b>Example</b>: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div>
 <div class="line"> </div>
-<div class="line"><span class="preprocessor">#include &lt;nautypp/nauty.hpp&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="nauty_8hpp.html">nautypp/nauty.hpp</a>&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">using namespace </span><a class="code" href="namespacenautypp.html">nautypp</a>;</div>
 <div class="line"> </div>
@@ -131,11 +134,13 @@ std::pair&lt; Vertex, Vertex &gt;&#160;</td><td class="memItemRight" valign="bot
 <div class="line">    std::cout &lt;&lt; <span class="stringliteral">&quot;Another neighbour: &quot;</span> &lt;&lt; u &lt;&lt; std::endl;</div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-<div class="ttc" id="aclassnautypp_1_1Graph_html_a0b860ba6aeb288a88742256bfde5efcc"><div class="ttname"><a href="classnautypp_1_1Graph.html#a0b860ba6aeb288a88742256bfde5efcc">nautypp::Graph::make_complete</a></div><div class="ttdeci">static Graph make_complete(size_t N)</div><div class="ttdef"><b>Definition:</b> nauty.hpp:859</div></div>
-<div class="ttc" id="aclassnautypp_1_1Graph_html_a166b421e5f0438fc536249d79800679b"><div class="ttname"><a href="classnautypp_1_1Graph.html#a166b421e5f0438fc536249d79800679b">nautypp::Graph::edges</a></div><div class="ttdeci">Edges edges(Vertex v) const</div><div class="ttdoc">Get an iterator over all the edges incident to some vertex.</div><div class="ttdef"><b>Definition:</b> nauty.hpp:403</div></div>
-<div class="ttc" id="anamespacenautypp_html"><div class="ttname"><a href="namespacenautypp.html">nautypp</a></div><div class="ttdoc">Namespace containing everything related to the wrapper.</div></div>
-</div><!-- fragment --> </div><hr/>The documentation for this class was generated from the following file:<ul>
-<li>includes/<a class="el" href="nauty_8hpp_source.html">nauty.hpp</a></li>
+<div class="ttc" id="aclassnautypp_1_1Graph_html_a0b860ba6aeb288a88742256bfde5efcc"><div class="ttname"><a href="classnautypp_1_1Graph.html#a0b860ba6aeb288a88742256bfde5efcc">nautypp::Graph::make_complete</a></div><div class="ttdeci">static Graph make_complete(size_t N)</div><div class="ttdef"><b>Definition:</b> graph.hpp:593</div></div>
+<div class="ttc" id="aclassnautypp_1_1Graph_html_a166b421e5f0438fc536249d79800679b"><div class="ttname"><a href="classnautypp_1_1Graph.html#a166b421e5f0438fc536249d79800679b">nautypp::Graph::edges</a></div><div class="ttdeci">Edges edges(Vertex v) const</div><div class="ttdoc">Get an iterator over all the edges incident to some vertex.</div><div class="ttdef"><b>Definition:</b> graph.hpp:95</div></div>
+<div class="ttc" id="anamespacenautypp_html"><div class="ttname"><a href="namespacenautypp.html">nautypp</a></div><div class="ttdoc">Namespace containing everything related to the wrapper.</div><div class="ttdef"><b>Definition:</b> algorithms.hpp:10</div></div>
+<div class="ttc" id="anauty_8hpp_html"><div class="ttname"><a href="nauty_8hpp.html">nauty.hpp</a></div><div class="ttdoc">Wrapper for nauty's geng and gentreeg in C++.</div></div>
+</div><!-- fragment --> </div><hr/>The documentation for this class was generated from the following files:<ul>
+<li>includes/nautypp/<a class="el" href="iterators_8hpp_source.html">iterators.hpp</a></li>
+<li>includes/nautypp/<a class="el" href="impl_8hpp_source.html">impl.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['_5fcliquergraphproperty_85',['_CliquerGraphProperty',['../classnautypp_1_1__CliquerGraphProperty.html',1,'nautypp']]]
+  ['basenautyworker_78',['BaseNautyWorker',['../classnautypp_1_1BaseNautyWorker.html',1,'nautypp']]]
 ];

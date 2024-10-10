@@ -1,12 +1,6 @@
 var searchData=
 [
-  ['e_28',['E',['../classnautypp_1_1Graph.html#af0d9b847b72b0a4cedc01e5a3ef5d12c',1,'nautypp::Graph']]],
-  ['edgeiterator_29',['EdgeIterator',['../classnautypp_1_1EdgeIterator.html',1,'nautypp']]],
-  ['edgeproperty_30',['EdgeProperty',['../classnautypp_1_1EdgeProperty.html',1,'nautypp']]],
-  ['edges_31',['edges',['../classnautypp_1_1Graph.html#a166b421e5f0438fc536249d79800679b',1,'nautypp::Graph::edges(Vertex v) const'],['../classnautypp_1_1Graph.html#a6b498082db213762efe848b4ce396179',1,'nautypp::Graph::edges() const']]],
-  ['edges_32',['Edges',['../classnautypp_1_1Edges.html',1,'nautypp']]],
-  ['edges_5fincident_5fto_33',['edges_incident_to',['../classnautypp_1_1Graph.html#a7051f12d3f8372de62fb1d5ec323ad25',1,'nautypp::Graph']]],
-  ['emptybuffer_34',['EmptyBuffer',['../classnautypp_1_1ContainerBuffer_1_1EmptyBuffer.html',1,'nautypp::ContainerBuffer']]],
-  ['enable_5fwrite_35',['enable_write',['../classnautypp_1_1ContainerBuffer.html#ad646a354cda7c03747616510226e7ed1',1,'nautypp::ContainerBuffer']]],
-  ['end_5fof_5fthread_36',['END_OF_THREAD',['../namespacenautypp.html#aa5a6f9826f1a56feb1b76576f1958fc6a06c6d1a7eb903230779644238137f8eb',1,'nautypp']]]
+  ['find_5fsome_5fclique_28',['find_some_clique',['../classnautypp_1_1Graph.html#a38fa4af9ef6e0d7ac64b54abbd7444a9',1,'nautypp::Graph']]],
+  ['find_5fsome_5findependent_5fset_29',['find_some_independent_set',['../classnautypp_1_1Graph.html#a4e2e7bc0e9d16a3aaf452b506cd4bb7a',1,'nautypp::Graph']]],
+  ['from_5fadjacency_5fmatrix_30',['from_adjacency_matrix',['../classnautypp_1_1Graph.html#a1a74b750c43efdd5b1d5c0ae760cc975',1,'nautypp::Graph::from_adjacency_matrix(const std::vector&lt; T &gt; A, bool upper=true)'],['../classnautypp_1_1Graph.html#ab05cff94e0e3edbfc8e6db3bca18b6f3',1,'nautypp::Graph::from_adjacency_matrix(const std::vector&lt; T &gt; A, size_t V, bool upper=true)']]]
 ];
