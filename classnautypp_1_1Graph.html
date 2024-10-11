@@ -702,7 +702,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>DegreeProperty</b></
 <div class="line">    }</div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-<div class="ttc" id="aclassnautypp_1_1Graph_html_a0b860ba6aeb288a88742256bfde5efcc"><div class="ttname"><a href="classnautypp_1_1Graph.html#a0b860ba6aeb288a88742256bfde5efcc">nautypp::Graph::make_complete</a></div><div class="ttdeci">static Graph make_complete(size_t N)</div><div class="ttdef"><b>Definition:</b> graph.hpp:639</div></div>
+<div class="ttc" id="aclassnautypp_1_1Graph_html_a0b860ba6aeb288a88742256bfde5efcc"><div class="ttname"><a href="classnautypp_1_1Graph.html#a0b860ba6aeb288a88742256bfde5efcc">nautypp::Graph::make_complete</a></div><div class="ttdeci">static Graph make_complete(size_t N)</div><div class="ttdef"><b>Definition:</b> graph.hpp:644</div></div>
 <div class="ttc" id="aclassnautypp_1_1Graph_html_a38fa4af9ef6e0d7ac64b54abbd7444a9"><div class="ttname"><a href="classnautypp_1_1Graph.html#a38fa4af9ef6e0d7ac64b54abbd7444a9">nautypp::Graph::find_some_clique</a></div><div class="ttdeci">Cliquer::Set find_some_clique(size_t minsize, size_t maxsize, bool maximal) const</div><div class="ttdoc">Find some clique in the graph.</div></div>
 <div class="ttc" id="anamespacenautypp_html"><div class="ttname"><a href="namespacenautypp.html">nautypp</a></div><div class="ttdoc">Namespace containing everything related to the wrapper.</div></div>
 <div class="ttc" id="anauty_8hpp_html"><div class="ttname"><a href="nauty_8hpp.html">nauty.hpp</a></div><div class="ttdoc">Wrapper for nauty's geng and gentreeg in C++.</div></div>
@@ -1002,9 +1002,9 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>DegreeProperty</b></
 <div class="line">        std::cout &lt;&lt; <span class="stringliteral">&quot;deg(&quot;</span> &lt;&lt; v &lt;&lt; <span class="stringliteral">&quot;) = &quot;</span> &lt;&lt; degrees[v] &lt;&lt; std::endl;</div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-<div class="ttc" id="aclassnautypp_1_1Graph_html_a06c8b506216d633eb044f997b9a79f26"><div class="ttname"><a href="classnautypp_1_1Graph.html#a06c8b506216d633eb044f997b9a79f26">nautypp::Graph::make_claw</a></div><div class="ttdeci">static Graph make_claw(size_t N)</div><div class="ttdef"><b>Definition:</b> graph.hpp:623</div></div>
-<div class="ttc" id="aclassnautypp_1_1Graph_html_a1d08da5ac889f55fb2cc45531f7c7afb"><div class="ttname"><a href="classnautypp_1_1Graph.html#a1d08da5ac889f55fb2cc45531f7c7afb">nautypp::Graph::max_degree</a></div><div class="ttdeci">size_t max_degree() const</div><div class="ttdoc">Alias of Delta()</div><div class="ttdef"><b>Definition:</b> graph.hpp:181</div></div>
-<div class="ttc" id="aclassnautypp_1_1Graph_html_ac7f5618ebbc2de7a9d9ab670244a7691"><div class="ttname"><a href="classnautypp_1_1Graph.html#ac7f5618ebbc2de7a9d9ab670244a7691">nautypp::Graph::min_degree</a></div><div class="ttdeci">size_t min_degree() const</div><div class="ttdoc">Alias of delta()</div><div class="ttdef"><b>Definition:</b> graph.hpp:167</div></div>
+<div class="ttc" id="aclassnautypp_1_1Graph_html_a06c8b506216d633eb044f997b9a79f26"><div class="ttname"><a href="classnautypp_1_1Graph.html#a06c8b506216d633eb044f997b9a79f26">nautypp::Graph::make_claw</a></div><div class="ttdeci">static Graph make_claw(size_t N)</div><div class="ttdef"><b>Definition:</b> graph.hpp:628</div></div>
+<div class="ttc" id="aclassnautypp_1_1Graph_html_a1d08da5ac889f55fb2cc45531f7c7afb"><div class="ttname"><a href="classnautypp_1_1Graph.html#a1d08da5ac889f55fb2cc45531f7c7afb">nautypp::Graph::max_degree</a></div><div class="ttdeci">size_t max_degree() const</div><div class="ttdoc">Alias of Delta()</div><div class="ttdef"><b>Definition:</b> graph.hpp:183</div></div>
+<div class="ttc" id="aclassnautypp_1_1Graph_html_ac7f5618ebbc2de7a9d9ab670244a7691"><div class="ttname"><a href="classnautypp_1_1Graph.html#ac7f5618ebbc2de7a9d9ab670244a7691">nautypp::Graph::min_degree</a></div><div class="ttdeci">size_t min_degree() const</div><div class="ttdoc">Alias of delta()</div><div class="ttdef"><b>Definition:</b> graph.hpp:169</div></div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -1831,8 +1831,36 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Determine whether a graph is planar or not.</p>
-<p>Basically a wrapper for nauty::planarity::sparseg_adjl_is_planar. Be aware that this function call must create an intermediate representation for compatibility, this might be slow! </p><dl class="section return"><dt>Returns</dt><dd><code>true</code> if the graph is planar and <code>false</code> otherwise. </dd></dl>
-
+<p>Basically a wrapper for nauty::planarity::sparseg_adjl_is_planar. Be aware that this function call must create an intermediate representation for compatibility, this might be slow! </p><dl class="section return"><dt>Returns</dt><dd><code>true</code> if the graph is planar and <code>false</code> otherwise.</dd></dl>
+<p><b>Example</b>: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="nauty_8hpp.html">nautypp/nauty.hpp</a>&gt;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">using namespace </span><a class="code" href="namespacenautypp.html">nautypp</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> test_planarity_of_Kn(<span class="keywordtype">size_t</span> n) {</div>
+<div class="line">    <span class="keyword">auto</span> Kn{<a class="code" href="classnautypp_1_1Graph.html#a0b860ba6aeb288a88742256bfde5efcc">Graph::make_complete</a>(n)};</div>
+<div class="line">    <span class="keywordtype">bool</span> isplanar{Kn.<a class="code" href="classnautypp_1_1Graph.html#aace3920e57d8cd7f23b22d88024a9c27">is_planar</a>()};</div>
+<div class="line">    std::cout &lt;&lt; <span class="stringliteral">&quot;K_&quot;</span> &lt;&lt; n &lt;&lt; <span class="stringliteral">&quot; is &quot;</span></div>
+<div class="line">              &lt;&lt; (isplanar ? <span class="stringliteral">&quot;&quot;</span> : <span class="stringliteral">&quot;not &quot;</span>) &lt;&lt; <span class="stringliteral">&quot;planar.\n&quot;</span>;</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> test_planarity_of_Knn(<span class="keywordtype">size_t</span> n) {</div>
+<div class="line">    <span class="keyword">auto</span> Knn{<a class="code" href="classnautypp_1_1Graph.html#a76378d9787957c943dd32101f26812aa">Graph::make_complete_bipartite</a>(n, n)};</div>
+<div class="line">    <span class="keywordtype">bool</span> isplanar{Knn.<a class="code" href="classnautypp_1_1Graph.html#aace3920e57d8cd7f23b22d88024a9c27">is_planar</a>()};</div>
+<div class="line">    std::cout &lt;&lt; <span class="stringliteral">&quot;K_&quot;</span> &lt;&lt; n &lt;&lt; <span class="stringliteral">&quot;,&quot;</span> &lt;&lt; n &lt;&lt; <span class="stringliteral">&quot; is &quot;</span></div>
+<div class="line">              &lt;&lt; (isplanar ? <span class="stringliteral">&quot;&quot;</span> : <span class="stringliteral">&quot;not &quot;</span>) &lt;&lt; <span class="stringliteral">&quot;planar.\n&quot;</span>;</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main() {</div>
+<div class="line">    <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> n{2}; n &lt; 10; ++n)</div>
+<div class="line">        test_planarity_of_Kn(n);</div>
+<div class="line">    std::cout &lt;&lt; std::endl;</div>
+<div class="line">    <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> n{2}; n &lt; 10; ++n)</div>
+<div class="line">        test_planarity_of_Knn(n);</div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">}</div>
+<div class="ttc" id="aclassnautypp_1_1Graph_html_a76378d9787957c943dd32101f26812aa"><div class="ttname"><a href="classnautypp_1_1Graph.html#a76378d9787957c943dd32101f26812aa">nautypp::Graph::make_complete_bipartite</a></div><div class="ttdeci">static Graph make_complete_bipartite(size_t s, size_t t)</div><div class="ttdef"><b>Definition:</b> graph.hpp:657</div></div>
+<div class="ttc" id="aclassnautypp_1_1Graph_html_aace3920e57d8cd7f23b22d88024a9c27"><div class="ttname"><a href="classnautypp_1_1Graph.html#aace3920e57d8cd7f23b22d88024a9c27">nautypp::Graph::is_planar</a></div><div class="ttdeci">bool is_planar() const</div><div class="ttdef"><b>Definition:</b> graph.hpp:493</div></div>
+</div><!-- fragment --> 
 </div>
 </div>
 <a id="ab2adb93f87fab5605ec90560179aa45a"></a>
@@ -2389,7 +2417,7 @@ template&lt;typename T &gt; </div>
 <div class="line">    std::cout &lt;&lt; <span class="stringliteral">&quot;Another neighbour: &quot;</span> &lt;&lt; u &lt;&lt; std::endl;</div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-<div class="ttc" id="aclassnautypp_1_1Graph_html_a166b421e5f0438fc536249d79800679b"><div class="ttname"><a href="classnautypp_1_1Graph.html#a166b421e5f0438fc536249d79800679b">nautypp::Graph::edges</a></div><div class="ttdeci">Edges edges(Vertex v) const</div><div class="ttdoc">Get an iterator over all the edges incident to some vertex.</div><div class="ttdef"><b>Definition:</b> graph.hpp:96</div></div>
+<div class="ttc" id="aclassnautypp_1_1Graph_html_a166b421e5f0438fc536249d79800679b"><div class="ttname"><a href="classnautypp_1_1Graph.html#a166b421e5f0438fc536249d79800679b">nautypp::Graph::edges</a></div><div class="ttdeci">Edges edges(Vertex v) const</div><div class="ttdoc">Get an iterator over all the edges incident to some vertex.</div><div class="ttdef"><b>Definition:</b> graph.hpp:98</div></div>
 </div><!-- fragment --> 
 </div>
 </div>
