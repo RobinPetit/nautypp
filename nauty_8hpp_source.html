@@ -77,20 +77,20 @@ $(function() {
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;algorithm&gt;</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;cmath&gt;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;functional&gt;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;limits&gt;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;thread&gt;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#ifdef __linux__</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &lt;pthread.h&gt;</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment">/* C&#39;s _Thread_local is called thread_local in C++ */</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#define _Thread_local thread_local</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &lt;nauty/gtools.h&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;limits&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;thread&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#ifdef __linux__</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &lt;pthread.h&gt;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">/* C&#39;s _Thread_local is called thread_local in C++ */</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#define _Thread_local thread_local</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &lt;nauty/gtools.h&gt;</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &lt;nauty/planarity.h&gt;</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &lt;nautypp/algorithms.hpp&gt;</span></div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &lt;nautypp/aliases.hpp&gt;</span></div>
@@ -462,109 +462,115 @@ $(function() {
 <div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;    NautyParameters parameters;</div>
 <div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160; </div>
-<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;    <span class="keyword">inline</span> std::thread start_nauty() {</div>
-<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;        std::thread ret{</div>
-<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;            parameters.tree</div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;            ? start_gentreeg()</div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;            : start_geng()</div>
-<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;        };</div>
-<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;        rename_thread(</div>
-<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;            ret,</div>
-<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;            parameters.tree</div>
-<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;            ? <span class="stringliteral">&quot;nauty-gentreeg&quot;</span></div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;            : <span class="stringliteral">&quot;nauty-geng&quot;</span></div>
-<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;        );</div>
-<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;        <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;    }</div>
-<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160; </div>
-<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;    <span class="keyword">inline</span> std::thread start_gentreeg() {</div>
-<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;        strcpy(params[0], <span class="stringliteral">&quot;gentreeg&quot;</span>);</div>
-<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;        std::sprintf(</div>
-<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;            params[1],</div>
-<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;            <span class="stringliteral">&quot;-D%d%s&quot;</span>,</div>
-<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;            parameters.max_deg,</div>
-<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;#ifdef NAUTYPP_DEBUG</div>
-<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;            <span class="stringliteral">&quot;&quot;</span></div>
-<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;#<span class="keywordflow">else</span></div>
-<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;            <span class="stringliteral">&quot;q&quot;</span></div>
-<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;#endif</div>
-<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;        );</div>
-<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;        std::sprintf(</div>
-<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;            params[2], <span class="stringliteral">&quot;%d&quot;</span>, parameters.V</div>
-<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;        );</div>
-<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;        <span class="keywordflow">for</span>(<span class="keyword">auto</span> i{0}; i &lt; Nauty::GENG_ARGC; ++i)</div>
-<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;            geng_argv[i] = params[i];</div>
-<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;        std::thread t(</div>
-<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;            [<span class="keyword">this</span>]() {</div>
-<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;                _gentreeg_main(Nauty::GENG_ARGC, geng_argv);</div>
-<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;                this-&gt;set_container_over();</div>
-<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;            }</div>
-<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;        );</div>
-<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;        <span class="keywordflow">return</span> t;</div>
-<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;    }</div>
-<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160; </div>
-<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;    <span class="keyword">inline</span> std::thread start_geng() {</div>
-<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;        strcpy(params[0], <span class="stringliteral">&quot;geng&quot;</span>);</div>
-<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;        <span class="keywordflow">for</span>(<span class="keyword">auto</span> i{0}; i &lt; Nauty::GENG_ARGC; ++i)</div>
-<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;            geng_argv[i] = params[i];</div>
-<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;        std::thread t(</div>
-<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;            [<span class="keyword">this</span>]() {</div>
-<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;                <span class="keywordtype">int</span> min_deg, max_deg;</div>
-<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">int</span> V{this-&gt;parameters.V}; V &lt;= this-&gt;parameters.Vmax; ++V) {</div>
-<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;                    <span class="keyword">auto</span>&amp; parameters{this-&gt;parameters};</div>
-<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;                    min_deg = std::min(parameters.min_deg, V-1);</div>
-<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;                    max_deg = std::min(parameters.max_deg, V-1);</div>
-<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;                    std::sprintf(</div>
-<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;                        params[1],</div>
-<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;                        <span class="stringliteral">&quot;-%s%s%s%s%s%s%s%s%s%s%sd%dD%d%s&quot;</span>,</div>
-<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;                        parameters.connected     ? <span class="stringliteral">&quot;c&quot;</span> : <span class="stringliteral">&quot;&quot;</span>,</div>
-<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;                        parameters.biconnected   ? <span class="stringliteral">&quot;C&quot;</span> : <span class="stringliteral">&quot;&quot;</span>,</div>
-<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;                        parameters.triangle_free ? <span class="stringliteral">&quot;t&quot;</span> : <span class="stringliteral">&quot;&quot;</span>,</div>
-<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;                        parameters.C4_free       ? <span class="stringliteral">&quot;f&quot;</span> : <span class="stringliteral">&quot;&quot;</span>,</div>
-<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;                        parameters.C5_free       ? <span class="stringliteral">&quot;p&quot;</span> : <span class="stringliteral">&quot;&quot;</span>,</div>
-<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;                        parameters.K4_free       ? <span class="stringliteral">&quot;k&quot;</span> : <span class="stringliteral">&quot;&quot;</span>,</div>
-<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;                        parameters.chordal       ? <span class="stringliteral">&quot;T&quot;</span> : <span class="stringliteral">&quot;&quot;</span>,</div>
-<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;                        parameters.split         ? <span class="stringliteral">&quot;S&quot;</span> : <span class="stringliteral">&quot;&quot;</span>,</div>
-<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;                        parameters.perfect       ? <span class="stringliteral">&quot;P&quot;</span> : <span class="stringliteral">&quot;&quot;</span>,</div>
-<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160;                        parameters.claw_free     ? <span class="stringliteral">&quot;F&quot;</span> : <span class="stringliteral">&quot;&quot;</span>,</div>
-<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;                        parameters.bipartite     ? <span class="stringliteral">&quot;b&quot;</span> : <span class="stringliteral">&quot;&quot;</span>,</div>
-<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;                        min_deg,</div>
-<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;                        max_deg,</div>
-<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;#ifdef NAUTYPP_DEBUG</div>
-<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160;                        <span class="stringliteral">&quot;&quot;</span></div>
-<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;#<span class="keywordflow">else</span></div>
-<div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160;                        <span class="stringliteral">&quot;q&quot;</span></div>
-<div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160;#endif</div>
-<div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;                    );</div>
-<div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;                    std::sprintf(this-&gt;geng_argv[2], <span class="stringliteral">&quot;%d&quot;</span>, V);</div>
-<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;                    _geng_main(Nauty::GENG_ARGC, this-&gt;geng_argv);</div>
-<div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;                }</div>
-<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;                this-&gt;set_container_over();</div>
-<div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;            }</div>
-<div class="line"><a name="l00530"></a><span class="lineno">  530</span>&#160;        );</div>
-<div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160;        <span class="keywordflow">return</span> t;</div>
-<div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;    }</div>
-<div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160; </div>
-<div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160;    <span class="keyword">static</span> <span class="keyword">inline</span> constexpr <span class="keyword">auto</span> GENG_ARGV_BUFFER_SIZE{64};</div>
-<div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160;    <span class="keyword">static</span> <span class="keyword">inline</span> constexpr <span class="keyword">auto</span> GENG_ARGC{3};</div>
-<div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;    <span class="keywordtype">char</span> params[Nauty::GENG_ARGC][Nauty::GENG_ARGV_BUFFER_SIZE];</div>
-<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;    <span class="keywordtype">char</span>* geng_argv[Nauty::GENG_ARGC];</div>
-<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160; </div>
-<div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> reset_container() {</div>
-<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;        Nauty::_container.reset(<span class="keyword">new</span> NautyContainer());</div>
-<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;    }</div>
-<div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160; </div>
-<div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160;    <span class="keyword">static</span> std::unique_ptr&lt;NautyContainer&gt; _container;</div>
-<div class="line"><a name="l00544"></a><span class="lineno">  544</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">void</span> set_container_over() {</div>
-<div class="line"><a name="l00545"></a><span class="lineno">  545</span>&#160;        Nauty::get_container()-&gt;set_over();</div>
-<div class="line"><a name="l00546"></a><span class="lineno">  546</span>&#160;    }</div>
-<div class="line"><a name="l00547"></a><span class="lineno">  547</span>&#160;};</div>
-<div class="line"><a name="l00548"></a><span class="lineno">  548</span>&#160; </div>
-<div class="line"><a name="l00549"></a><span class="lineno">  549</span>&#160;}  <span class="comment">// namespace nautypp</span></div>
-<div class="line"><a name="l00550"></a><span class="lineno">  550</span>&#160; </div>
-<div class="line"><a name="l00551"></a><span class="lineno">  551</span>&#160; </div>
-<div class="line"><a name="l00552"></a><span class="lineno">  552</span>&#160;<span class="preprocessor">#include &lt;nautypp/impl.hpp&gt;</span></div>
-<div class="line"><a name="l00553"></a><span class="lineno">  553</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;    <span class="keyword">inline</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* get_nauty_name()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;        <span class="keywordflow">if</span>(parameters.tree)</div>
+<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;nauty-gentreeg&quot;</span>;</div>
+<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;        <span class="comment">/*else if(parameters.planar)</span></div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;<span class="comment">            return &quot;nauty-planarg&quot;;*/</span></div>
+<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;        <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;nauty-geng&quot;</span>;</div>
+<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;    }</div>
+<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160; </div>
+<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;    <span class="keyword">inline</span> std::thread start_nauty() {</div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;        std::thread ret{</div>
+<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;            parameters.tree</div>
+<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;            ? start_gentreeg()</div>
+<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;            : start_geng()</div>
+<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;        };</div>
+<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;        rename_thread(</div>
+<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;            ret,</div>
+<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;            get_nauty_name()</div>
+<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;        );</div>
+<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;        <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;    }</div>
+<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160; </div>
+<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;    <span class="keyword">inline</span> std::thread start_gentreeg() {</div>
+<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;        strcpy(params[0], <span class="stringliteral">&quot;gentreeg&quot;</span>);</div>
+<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;        std::sprintf(</div>
+<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;            params[1],</div>
+<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;            <span class="stringliteral">&quot;-D%d%s&quot;</span>,</div>
+<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;            parameters.max_deg,</div>
+<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;#ifdef NAUTYPP_DEBUG</div>
+<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;            <span class="stringliteral">&quot;&quot;</span></div>
+<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;#<span class="keywordflow">else</span></div>
+<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;            <span class="stringliteral">&quot;q&quot;</span></div>
+<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;#endif</div>
+<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;        );</div>
+<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;        std::sprintf(</div>
+<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;            params[2], <span class="stringliteral">&quot;%d&quot;</span>, parameters.V</div>
+<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;        );</div>
+<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;        <span class="keywordflow">for</span>(<span class="keyword">auto</span> i{0}; i &lt; Nauty::GENG_ARGC; ++i)</div>
+<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;            geng_argv[i] = params[i];</div>
+<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;        std::thread t(</div>
+<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;            [<span class="keyword">this</span>]() {</div>
+<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;                _gentreeg_main(Nauty::GENG_ARGC, geng_argv);</div>
+<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;                this-&gt;set_container_over();</div>
+<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;            }</div>
+<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;        );</div>
+<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;        <span class="keywordflow">return</span> t;</div>
+<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;    }</div>
+<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160; </div>
+<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;    <span class="keyword">inline</span> std::thread start_geng() {</div>
+<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;        strcpy(params[0], <span class="stringliteral">&quot;geng&quot;</span>);</div>
+<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;        <span class="keywordflow">for</span>(<span class="keyword">auto</span> i{0}; i &lt; Nauty::GENG_ARGC; ++i)</div>
+<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;            geng_argv[i] = params[i];</div>
+<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;        std::thread t(</div>
+<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;            [<span class="keyword">this</span>]() {</div>
+<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;                <span class="keywordtype">int</span> min_deg, max_deg;</div>
+<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">int</span> V{this-&gt;parameters.V}; V &lt;= this-&gt;parameters.Vmax; ++V) {</div>
+<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;                    <span class="keyword">auto</span>&amp; parameters{this-&gt;parameters};</div>
+<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;                    min_deg = std::min(parameters.min_deg, V-1);</div>
+<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;                    max_deg = std::min(parameters.max_deg, V-1);</div>
+<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;                    std::sprintf(</div>
+<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;                        params[1],</div>
+<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;                        <span class="stringliteral">&quot;-%s%s%s%s%s%s%s%s%s%s%sd%dD%d%s&quot;</span>,</div>
+<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;                        parameters.connected     ? <span class="stringliteral">&quot;c&quot;</span> : <span class="stringliteral">&quot;&quot;</span>,</div>
+<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;                        parameters.biconnected   ? <span class="stringliteral">&quot;C&quot;</span> : <span class="stringliteral">&quot;&quot;</span>,</div>
+<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160;                        parameters.triangle_free ? <span class="stringliteral">&quot;t&quot;</span> : <span class="stringliteral">&quot;&quot;</span>,</div>
+<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;                        parameters.C4_free       ? <span class="stringliteral">&quot;f&quot;</span> : <span class="stringliteral">&quot;&quot;</span>,</div>
+<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;                        parameters.C5_free       ? <span class="stringliteral">&quot;p&quot;</span> : <span class="stringliteral">&quot;&quot;</span>,</div>
+<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;                        parameters.K4_free       ? <span class="stringliteral">&quot;k&quot;</span> : <span class="stringliteral">&quot;&quot;</span>,</div>
+<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;                        parameters.chordal       ? <span class="stringliteral">&quot;T&quot;</span> : <span class="stringliteral">&quot;&quot;</span>,</div>
+<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160;                        parameters.split         ? <span class="stringliteral">&quot;S&quot;</span> : <span class="stringliteral">&quot;&quot;</span>,</div>
+<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;                        parameters.perfect       ? <span class="stringliteral">&quot;P&quot;</span> : <span class="stringliteral">&quot;&quot;</span>,</div>
+<div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160;                        parameters.claw_free     ? <span class="stringliteral">&quot;F&quot;</span> : <span class="stringliteral">&quot;&quot;</span>,</div>
+<div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160;                        parameters.bipartite     ? <span class="stringliteral">&quot;b&quot;</span> : <span class="stringliteral">&quot;&quot;</span>,</div>
+<div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;                        min_deg,</div>
+<div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;                        max_deg,</div>
+<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;#ifdef NAUTYPP_DEBUG</div>
+<div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;                        <span class="stringliteral">&quot;&quot;</span></div>
+<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;#<span class="keywordflow">else</span></div>
+<div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;                        <span class="stringliteral">&quot;q&quot;</span></div>
+<div class="line"><a name="l00530"></a><span class="lineno">  530</span>&#160;#endif</div>
+<div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160;                    );</div>
+<div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;                    std::sprintf(this-&gt;geng_argv[2], <span class="stringliteral">&quot;%d&quot;</span>, V);</div>
+<div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160;                    _geng_main(Nauty::GENG_ARGC, this-&gt;geng_argv);</div>
+<div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160;                }</div>
+<div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160;                this-&gt;set_container_over();</div>
+<div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;            }</div>
+<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;        );</div>
+<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;        <span class="keywordflow">return</span> t;</div>
+<div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;    }</div>
+<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160; </div>
+<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;    <span class="keyword">static</span> <span class="keyword">inline</span> constexpr <span class="keyword">auto</span> GENG_ARGV_BUFFER_SIZE{64};</div>
+<div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160;    <span class="keyword">static</span> <span class="keyword">inline</span> constexpr <span class="keyword">auto</span> GENG_ARGC{3};</div>
+<div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160;    <span class="keywordtype">char</span> params[Nauty::GENG_ARGC][Nauty::GENG_ARGV_BUFFER_SIZE];</div>
+<div class="line"><a name="l00544"></a><span class="lineno">  544</span>&#160;    <span class="keywordtype">char</span>* geng_argv[Nauty::GENG_ARGC];</div>
+<div class="line"><a name="l00545"></a><span class="lineno">  545</span>&#160; </div>
+<div class="line"><a name="l00546"></a><span class="lineno">  546</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> reset_container() {</div>
+<div class="line"><a name="l00547"></a><span class="lineno">  547</span>&#160;        Nauty::_container.reset(<span class="keyword">new</span> NautyContainer());</div>
+<div class="line"><a name="l00548"></a><span class="lineno">  548</span>&#160;    }</div>
+<div class="line"><a name="l00549"></a><span class="lineno">  549</span>&#160; </div>
+<div class="line"><a name="l00550"></a><span class="lineno">  550</span>&#160;    <span class="keyword">static</span> std::unique_ptr&lt;NautyContainer&gt; _container;</div>
+<div class="line"><a name="l00551"></a><span class="lineno">  551</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">void</span> set_container_over() {</div>
+<div class="line"><a name="l00552"></a><span class="lineno">  552</span>&#160;        Nauty::get_container()-&gt;set_over();</div>
+<div class="line"><a name="l00553"></a><span class="lineno">  553</span>&#160;    }</div>
+<div class="line"><a name="l00554"></a><span class="lineno">  554</span>&#160;};</div>
+<div class="line"><a name="l00555"></a><span class="lineno">  555</span>&#160; </div>
+<div class="line"><a name="l00556"></a><span class="lineno">  556</span>&#160;}  <span class="comment">// namespace nautypp</span></div>
+<div class="line"><a name="l00557"></a><span class="lineno">  557</span>&#160; </div>
+<div class="line"><a name="l00558"></a><span class="lineno">  558</span>&#160;<span class="preprocessor">#include &lt;nautypp/impl.hpp&gt;</span></div>
+<div class="line"><a name="l00559"></a><span class="lineno">  559</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aclassnautypp_1_1BaseNautyWorker_html"><div class="ttname"><a href="classnautypp_1_1BaseNautyWorker.html">nautypp::BaseNautyWorker</a></div><div class="ttdef"><b>Definition:</b> nauty.hpp:264</div></div>
 <div class="ttc" id="aclassnautypp_1_1ContainerBuffer_1_1EmptyBuffer_html"><div class="ttname"><a href="classnautypp_1_1ContainerBuffer_1_1EmptyBuffer.html">nautypp::ContainerBuffer::EmptyBuffer</a></div><div class="ttdef"><b>Definition:</b> nauty.hpp:138</div></div>
 <div class="ttc" id="aclassnautypp_1_1ContainerBuffer_html"><div class="ttname"><a href="classnautypp_1_1ContainerBuffer.html">nautypp::ContainerBuffer</a></div><div class="ttdoc">Communication buffer between producer and consumer threads.</div><div class="ttdef"><b>Definition:</b> nauty.hpp:102</div></div>
@@ -572,7 +578,7 @@ $(function() {
 <div class="ttc" id="aclassnautypp_1_1ContainerBuffer_html_aa2e81bad4420b085d272d1967175c1cd"><div class="ttname"><a href="classnautypp_1_1ContainerBuffer.html#aa2e81bad4420b085d272d1967175c1cd">nautypp::ContainerBuffer::push</a></div><div class="ttdeci">bool push(T &amp;G)</div><div class="ttdoc">Tries to move something into the write buffer.</div><div class="ttdef"><b>Definition:</b> nauty.hpp:129</div></div>
 <div class="ttc" id="aclassnautypp_1_1ContainerBuffer_html_ad646a354cda7c03747616510226e7ed1"><div class="ttname"><a href="classnautypp_1_1ContainerBuffer.html#ad646a354cda7c03747616510226e7ed1">nautypp::ContainerBuffer::enable_write</a></div><div class="ttdeci">void enable_write()</div><div class="ttdoc">Enable the buffer.</div><div class="ttdef"><b>Definition:</b> nauty.hpp:170</div></div>
 <div class="ttc" id="aclassnautypp_1_1ContainerBuffer_html_aff2260e85c78e4fc3d4a8f240dac44f3"><div class="ttname"><a href="classnautypp_1_1ContainerBuffer.html#aff2260e85c78e4fc3d4a8f240dac44f3">nautypp::ContainerBuffer::pop</a></div><div class="ttdeci">T pop()</div><div class="ttdoc">Extract an element from the read buffer.</div><div class="ttdef"><b>Definition:</b> nauty.hpp:148</div></div>
-<div class="ttc" id="aclassnautypp_1_1Graph_html"><div class="ttname"><a href="classnautypp_1_1Graph.html">nautypp::Graph</a></div><div class="ttdoc">Wrapper of nauty's graphs.</div><div class="ttdef"><b>Definition:</b> graph.hpp:19</div></div>
+<div class="ttc" id="aclassnautypp_1_1Graph_html"><div class="ttname"><a href="classnautypp_1_1Graph.html">nautypp::Graph</a></div><div class="ttdoc">Wrapper of nauty's graphs.</div><div class="ttdef"><b>Definition:</b> graph.hpp:20</div></div>
 <div class="ttc" id="aclassnautypp_1_1NautyContainer_html"><div class="ttname"><a href="classnautypp_1_1NautyContainer.html">nautypp::NautyContainer</a></div><div class="ttdoc">Container of multiple inter-thread buffers.</div><div class="ttdef"><b>Definition:</b> nauty.hpp:222</div></div>
 <div class="ttc" id="aclassnautypp_1_1NautyWorkerWrapper_html"><div class="ttname"><a href="classnautypp_1_1NautyWorkerWrapper.html">nautypp::NautyWorkerWrapper</a></div><div class="ttdef"><b>Definition:</b> nauty.hpp:321</div></div>
 <div class="ttc" id="aclassnautypp_1_1NautyWorker_html"><div class="ttname"><a href="classnautypp_1_1NautyWorker.html">nautypp::NautyWorker</a></div><div class="ttdef"><b>Definition:</b> nauty.hpp:290</div></div>

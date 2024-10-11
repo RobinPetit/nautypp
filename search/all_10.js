@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['tree_73',['tree',['../structnautypp_1_1NautyParameters.html#ab6902fa035406b4e5794ab231fb647c0',1,'nautypp::NautyParameters']]],
-  ['triangle_5ffree_74',['triangle_free',['../structnautypp_1_1NautyParameters.html#a6bdb3d49ad212988e578ab89230fab31',1,'nautypp::NautyParameters']]]
+  ['tree_74',['tree',['../structnautypp_1_1NautyParameters.html#ab6902fa035406b4e5794ab231fb647c0',1,'nautypp::NautyParameters']]],
+  ['triangle_5ffree_75',['triangle_free',['../structnautypp_1_1NautyParameters.html#a6bdb3d49ad212988e578ab89230fab31',1,'nautypp::NautyParameters']]]
 ];
