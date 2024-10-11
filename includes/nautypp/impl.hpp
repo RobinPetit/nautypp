@@ -1,9 +1,6 @@
 #ifndef NAUTYPP_IMPL_HPP
 #define NAUTYPP_IMPL_HPP
 
-#include <nautypp/algorithms.hpp>
-#include <nautypp/aliases.hpp>
-
 namespace nautypp {
 bool EdgeIterator::operator==(const EdgeIterator& other) const {
     return std::addressof(graph) == std::addressof(other.graph)

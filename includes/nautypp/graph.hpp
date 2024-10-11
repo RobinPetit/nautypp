@@ -2,7 +2,10 @@
 #define NAUTYPP_GRAPH_HPP
 
 #include <algorithm>
+#include <cmath>
 #include <functional>
+
+#include "nauty/planarity.h"
 
 #include <nautypp/algorithms.hpp>
 #include <nautypp/aliases.hpp>
@@ -258,15 +261,8 @@ public:
     /// \brief Get all the neighbours of a vertex
     ///
     /// \param v The vertex whose neighbours are demanded
-    inline std::vector<Vertex> neighbours_of(Vertex v) const {
-        std::vector<Vertex> ret;
-        auto degv{degree(v)};
-        if(degv == 0)
-            return ret;
-        ret.reserve(degv);
-        for(auto [_, w] : edges(v))
-            ret.push_back(w);
-        return ret;
+    inline Neighbours neighbours_of(Vertex v) const {
+        return {*this, v};
     }
 
     /// Alias of neighbours_of()
@@ -485,6 +481,61 @@ public:
     std::vector<Cliquer::Set> get_all_cliques(size_t minsize, size_t maxsize,
             bool maximal) const;
 
+    /// Determine whether a graph is planar or not.
+    ///
+    /// Basically a wrapper for nauty::planarity::sparseg_adjl_is_planar.
+    /// Be aware that this function call must create an intermediate
+    /// representation for compatibility, this might be slow!
+    /// \return `true` if the graph is planar and `false` otherwise.
+    ///
+    /// **Example**:
+    /// \include planar.cpp
+    inline bool is_planar() const {
+        const auto n{this->V()};
+        // see nauty::planarg.c::isplanar
+        DYNALLSTAT(t_ver_sparse_rep,  V, V_sz);
+        DYNALLSTAT(t_adjl_sparse_rep, A, A_sz);
+        DYNALLOC1(t_ver_sparse_rep,   V, V_sz, n,       "is_planar");
+        DYNALLOC1(t_adjl_sparse_rep,  A, A_sz, 2*E()+1, "is_planar");
+        t_dlcl **dfs_tree, **back_edges, **mult_edges;
+        t_ver_edge *embed_graph;
+        int edge_pos, v, w, c;
+        // Conversion to nauty::planarity adjl format
+        int k{0};
+        for(Vertex v{0}; v < n; ++v) {
+            if(degree(v) == 0) {
+                V[v].first_edge = NIL;
+            } else {
+                V[v].first_edge = k;
+                for(Vertex w : neighbours_of(v)) {
+                    A[k].end_vertex = w;
+                    A[k].next = k+1;
+                    ++k;
+                    // No need to handle loop
+                }
+                A[k-1].next = NIL;
+            }
+        }
+        // see nauty::planarity.c
+        bool ret{static_cast<bool>(sparseg_adjl_is_planar(
+            V, n, A, &c,
+            &dfs_tree, &back_edges, &mult_edges,
+            &embed_graph, &edge_pos, &v, &w
+        ))};
+        sparseg_dlcl_delete(dfs_tree, n);
+        sparseg_dlcl_delete(back_edges, n);
+        sparseg_dlcl_delete(mult_edges, n);
+        embedg_VES_delete(embed_graph, n);
+        DYNFREE(V, V_sz);
+        DYNFREE(A, A_sz);
+        return ret;
+    }
+
+    /// See is_planar
+    static inline bool is_planar(const Graph& G) {
+        return G.is_planar();
+    }
+
     friend class EdgeIterator;
     friend class AllEdgeIterator;
     friend class NautyContainer;
@@ -616,9 +667,8 @@ private:
 #ifdef NAUTYPP_SGO
     graph __small_graph_buffer[NAUTYPP_SMALL_GRAPH_SIZE];
 #endif
+    size_t _m{1};
     graph* g;
-
-    static inline constexpr size_t _m{1};
 
     EdgeProperty nb_edges;
     std::vector<DegreeProperty> degrees;

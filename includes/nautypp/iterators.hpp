@@ -72,7 +72,9 @@ private:
 class Edges {
 public:
     Edges() = delete;
-    Edges(const Graph& G, Vertex vertex);
+    Edges(const Graph& G, Vertex vertex):
+            graph{G}, v{vertex} {
+    }
 
     inline EdgeIterator begin() const {
         return {graph, v};
@@ -92,7 +94,9 @@ private:
 class AllEdges {
 public:
     AllEdges() = delete;
-    AllEdges(const Graph& G);
+    AllEdges(const Graph& G):
+            graph{G} {
+    }
 
     inline AllEdgeIterator begin() const {
         return {graph, false};
@@ -108,6 +112,56 @@ public:
     }
 private:
     const Graph& graph;
+};
+
+class NeighbourIterator {
+public:
+    NeighbourIterator() = delete;
+    NeighbourIterator(const Graph& G, Vertex vertex, bool end=false):
+            it(G, vertex, end) {
+    }
+    NeighbourIterator(const Graph& G, Vertex vertex, setword Nv):
+            it(G, vertex, Nv) {
+    }
+    inline bool operator==(const NeighbourIterator& other) const {
+        return it == other.it;
+    }
+    inline bool operator!=(const NeighbourIterator& other) const {
+        return it != other.it;
+    }
+    inline NeighbourIterator& operator=(NeighbourIterator&& other) {
+        it = std::move(other.it);
+        return *this;
+    }
+    inline NeighbourIterator& operator++() {
+        ++it;
+        return *this;
+    }
+    inline Vertex operator*() const {
+        return (*it).second;
+    }
+private:
+    EdgeIterator it;
+};
+
+class Neighbours {
+public:
+    Neighbours() = delete;
+    Neighbours(const Graph& G, Vertex vertex):
+            graph{G}, v{vertex} {
+    }
+
+    inline NeighbourIterator begin() const {
+        return {graph, v};
+    }
+    inline NeighbourIterator end() const  {
+        return {graph, v, true};
+    }
+
+    operator std::vector<Vertex>() const;
+private:
+    const Graph& graph;
+    Vertex v;
 };
 
 }

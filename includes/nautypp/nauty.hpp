@@ -7,7 +7,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include <functional>
 #include <iostream>
 #include <limits>
 #include <memory>
@@ -21,6 +20,7 @@
 /* C's _Thread_local is called thread_local in C++ */
 #define _Thread_local thread_local
 #include <nauty/gtools.h>
+#include <nauty/planarity.h>
 
 #include <nautypp/algorithms.hpp>
 #include <nautypp/aliases.hpp>
@@ -448,6 +448,15 @@ public:
 private:
     NautyParameters parameters;
 
+    inline const char* get_nauty_name() const {
+        if(parameters.tree)
+            return "nauty-gentreeg";
+        /*else if(parameters.planar)
+            return "nauty-planarg";*/
+        else
+            return "nauty-geng";
+    }
+
     inline std::thread start_nauty() {
         std::thread ret{
             parameters.tree
@@ -456,9 +465,7 @@ private:
         };
         rename_thread(
             ret,
-            parameters.tree
-            ? "nauty-gentreeg"
-            : "nauty-geng"
+            get_nauty_name()
         );
         return ret;
     }
@@ -547,7 +554,6 @@ private:
 };
 
 }  // namespace nautypp
-
 
 #include <nautypp/impl.hpp>
 #endif

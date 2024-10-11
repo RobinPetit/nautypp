@@ -7,7 +7,7 @@ NAUTY_DEPENDENCIES=${NAUTY_SRC_PATH}/gtnauty.o ${NAUTY_SRC_PATH}/gtools.o ${NAUT
                    ${NAUTY_SRC_PATH}/naugraph.o ${NAUTY_SRC_PATH}/naugroup.o ${NAUTY_SRC_PATH}/naurng.o \
                    ${NAUTY_SRC_PATH}/nausparse.o ${NAUTY_SRC_PATH}/nautil.o ${NAUTY_SRC_PATH}/nautinv.o \
                    ${NAUTY_SRC_PATH}/naututil.o ${NAUTY_SRC_PATH}/nautycliquer.o ${NAUTY_SRC_PATH}/nauty.o \
-                   ${NAUTY_SRC_PATH}/schreier.o ${NAUTY_SRC_PATH}/traces.o
+                   ${NAUTY_SRC_PATH}/schreier.o ${NAUTY_SRC_PATH}/traces.o ${NAUTY_SRC_PATH}/planarity.o
 
 ifeq (${INSTALL_INCLUDES_PATH},)
 INSTALL_INCLUDES_PATH=~/includes/nautypp/
@@ -33,7 +33,7 @@ install_debug: build_debug
 	mkdir -p ${INSTALL_LIB_PATH} && cp lib/debug/libnautypp.a ${INSTALL_LIB_PATH}
 	mkdir -p ${INSTALL_INCLUDES_PATH} && cp includes/nautypp/*.hpp ${INSTALL_INCLUDES_PATH}
 
-lib/%/libnautypp.a: obj/%/nautypp.o obj/nauty/geng.o obj/nauty/gentreeg.o ${NAUTY_DEPENDENCIES} includes/nautypp/nauty.hpp ${NAUTY_SRC_PATH}/nauty.a
+lib/%/libnautypp.a: obj/%/nautypp.o obj/nauty/geng.o obj/nauty/gentreeg.o obj/nauty/planarity.o ${NAUTY_DEPENDENCIES} ${NAUTY_SRC_PATH}/nauty.a
 	$(ensure_dir)
 	ar rvs $@ $(filter %.o,$^) $(filter %.a,$^)
 
@@ -52,6 +52,10 @@ obj/nauty/geng.o: ${NAUTY_SRC_PATH}/geng.c
 obj/nauty/gentreeg.o: ${NAUTY_SRC_PATH}/gentreeg.c
 	$(ensure_dir)
 	${CXX} -c -o $@ $< $(CXXFLAGS) -DGENTREEG_MAIN=_gentreeg_main -DOUTPROC=_gentreeg_callback
+
+obj/nauty/planarity.o: ${NAUTY_SRC_PATH}/planarity.c
+	$(ensure_dir)
+	${CXX} -c -o $@ $< $(CXXFLAGS) -g
 
 -include obj/**/*.d
 
