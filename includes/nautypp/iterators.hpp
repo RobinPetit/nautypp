@@ -1,15 +1,20 @@
 #ifndef NAUTYPP_ITERATORS_HPP
 #define NAUTYPP_ITERATORS_HPP
 
-#include <nautypp/aliases.hpp>
-
 #include <array>
+#include <stdexcept>
 #include <utility>
 #include <vector>
+
+#include <nauty/nauty.h>
+
+#include <nautypp/aliases.hpp>
+
 
 namespace nautypp {
 
 class Graph;
+class AllEdgeIterator;
 
 /*      *************** Iterables and Iterators ***************      */
 
@@ -22,16 +27,40 @@ class EdgeIterator {
 public:
     EdgeIterator() = delete;
     EdgeIterator(const Graph&, Vertex vertex, bool end=false);
-    EdgeIterator(const Graph&, Vertex vertex, setword Nv);
-    inline bool operator==(const EdgeIterator&) const;
-    inline bool operator!=(const EdgeIterator&) const;
-    inline EdgeIterator& operator=(EdgeIterator&& other);
-    inline EdgeIterator& operator++();
-    inline std::pair<Vertex, Vertex> operator*() const;
+    //EdgeIterator(const Graph&, Vertex vertex, setword Nv);
+    inline bool operator==(const EdgeIterator& other) const {
+        return std::addressof(graph) == std::addressof(other.graph)
+            and v == other.v
+            and gv == other.gv
+            and w == other.w;
+    }
+    inline bool operator!=(const EdgeIterator& other) const {
+        return not (*this == other);
+    }
+    inline EdgeIterator& operator=(EdgeIterator&& other) {
+        if(std::addressof(graph) != std::addressof(other.graph))
+            throw std::runtime_error(
+                    "Cannot reassign EdgeIterator to a new graph"
+            );
+        v = other.v;
+        w = other.w;
+        gv = other.gv;
+        return *this;
+    }
+    EdgeIterator& operator++();
+    inline std::pair<Vertex, Vertex> operator*() const {
+        return {v, w};
+    }
 private:
     const Graph& graph;
     Vertex v, w;
-    setword gv;
+    setword* gv;
+
+    friend AllEdgeIterator;
+    inline void goto_afeter_v() {
+        while(w != NO_VERTEX and w < v)
+            ++*this;
+    }
 };
 
 /// \class AllEdgeIterator
@@ -44,15 +73,26 @@ class AllEdgeIterator {
 public:
     AllEdgeIterator() = delete;
     AllEdgeIterator(const Graph&, bool end=false);
-    inline bool operator==(const AllEdgeIterator&) const;
-    inline bool operator!=(const AllEdgeIterator&) const;
-    inline AllEdgeIterator& operator++();
-    inline std::pair<Vertex, Vertex> operator*() const;
+    inline bool operator==(const AllEdgeIterator& other) const {
+        return it == other.it;
+    }
+    inline bool operator!=(const AllEdgeIterator& other) const {
+        return not (*this == other);
+    }
+    inline AllEdgeIterator& operator++() {
+        next();
+        return *this;
+    }
+    inline std::pair<Vertex, Vertex> operator*() const {
+        return *it;
+    }
 private:
     const Graph& graph;
+    Vertex v;
     EdgeIterator it;
+    EdgeIterator it_end;
 
-    inline void next();
+    void next();
 
     /// MASKS[i] = (0xFF...FF) >> (i+1)
     static constexpr std::array<setword, WORDSIZE> MASKS{[]{

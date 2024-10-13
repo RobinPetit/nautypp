@@ -26,6 +26,8 @@
 #include <nautypp/aliases.hpp>
 #include <nautypp/cliquer.hpp>
 #include <nautypp/graph.hpp>
+#include <nautypp/iterators.hpp>
+#include <nautypp/properties.hpp>
 
 #ifdef NAUTYPP_SGO
 # ifndef NAUTYPP_SMALL_GRAPH_SIZE

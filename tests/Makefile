@@ -1,5 +1,5 @@
 #CXXFLAGS=-std=c++20 -MMD -Wall -Wextra -O3
-CXXFLAGS=-std=c++20 -MMD -Wall -Wextra -g
+CXXFLAGS=-std=c++20 -MMD -Wall -Wextra -g -fsanitize=address
 
 SRC=$(wildcard *.cpp)
 OBJ=$(patsubst %.cpp,obj/%.o,${SRC})

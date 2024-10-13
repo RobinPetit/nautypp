@@ -27,11 +27,11 @@ build_release: lib/release/libnautypp.a
 
 install_release: build_release
 	mkdir -p ${INSTALL_LIB_PATH} && cp lib/release/libnautypp.a ${INSTALL_LIB_PATH}
-	mkdir -p ${INSTALL_INCLUDES_PATH} && cp includes/nautypp/*.hpp ${INSTALL_INCLUDES_PATH}
+	mkdir -p ${INSTALL_INCLUDES_PATH} && cp includes/nautypp/*pp ${INSTALL_INCLUDES_PATH}
 
 install_debug: build_debug
 	mkdir -p ${INSTALL_LIB_PATH} && cp lib/debug/libnautypp.a ${INSTALL_LIB_PATH}
-	mkdir -p ${INSTALL_INCLUDES_PATH} && cp includes/nautypp/*.hpp ${INSTALL_INCLUDES_PATH}
+	mkdir -p ${INSTALL_INCLUDES_PATH} && cp includes/nautypp/*pp ${INSTALL_INCLUDES_PATH}
 
 lib/%/libnautypp.a: obj/%/nautypp.o obj/nauty/geng.o obj/nauty/gentreeg.o obj/nauty/planarity.o ${NAUTY_DEPENDENCIES} ${NAUTY_SRC_PATH}/nauty.a
 	$(ensure_dir)

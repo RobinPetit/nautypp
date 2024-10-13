@@ -2,7 +2,7 @@
 
 #include <catch2/catch.hpp>
 
-#include <nautypp/nauty.hpp>
+#include <nautypp/nautypp>
 
 static inline uint64_t binom2(uint64_t n) {
     return (n*(n-1)) / 2;
@@ -43,7 +43,7 @@ TEST_CASE("Complete graph is complete") {
     REQUIRE(Kn.E() == binom2(n));
     for(Vertex v{0}; v < Kn.V(); ++v) {
         REQUIRE(Kn.degree(v) == n-1);
-        auto Nv{Kn.neighbours_of(v)};
+        std::vector<Vertex> Nv{Kn.neighbours_of(v)};
         REQUIRE(Nv.size() == n-1);
         for(Vertex w{0}; w < Kn.V(); ++w) {
             if(w == v)
@@ -72,7 +72,7 @@ TEST_CASE("Complete bipartite is complete bipartite") {
     REQUIRE(Kst.E() == s*t);
 
     for(Vertex v{0}; v < Kst.V(); ++v) {
-        auto Nv{Kst.neighbours_of(v)};
+        std::vector<Vertex> Nv{Kst.neighbours_of(v)};
         auto& expected{
             contains(first_part, v) ? second_part : first_part
         };
@@ -99,4 +99,23 @@ TEST_CASE("Disjoint union") {
     auto components{G.get_connected_components()};
     REQUIRE(components.get_component_of(0) == first_component);
     REQUIRE(components.get_component_of(G.V()-1) == second_component);
+}
+
+TEST_CASE("Big graphs") {
+    auto k = GENERATE(values({6, 8, 10, 12, 14}));
+    auto n{1ull << (k-1)};
+    auto K2n{Graph::make_complete(n)};  // K_{2^n}
+    REQUIRE(K2n.V() == n);
+    REQUIRE(K2n.E() == binom2(n));
+
+    std::vector<Vertex> expected_neighbours;
+    expected_neighbours.reserve(n-1);
+    for(Vertex v{0}; v < n; ++v) {
+        expected_neighbours.clear();
+        for(Vertex w{0}; w < n; ++w)
+            if(w != v)
+                expected_neighbours.push_back(w);
+        std::vector<Vertex> Nv{K2n.neighbours_of(v)};
+        REQUIRE(expected_neighbours == Nv);
+    }
 }

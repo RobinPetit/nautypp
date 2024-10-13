@@ -1,5 +1,6 @@
+#include "nautypp/aliases.hpp"
+#include "nautypp/iterators.hpp"
 #include "nautypp/nauty.hpp"
-#include <string>
 
 using namespace nautypp;
 
@@ -21,25 +22,37 @@ std::unique_ptr<NautyContainer> Nauty::_container;
 
 EdgeIterator::EdgeIterator(const Graph& G, Vertex vertex, bool end):
         graph{G},
-        v{vertex}, w{0},
-        gv{
-            end
-            ? 0
-            : *GRAPHROW(G.g, v, G.__get_m())
-        } {
-    ++*this;
-}
-EdgeIterator::EdgeIterator(const Graph& G, Vertex vertex, setword Nv):
-        graph{G},
-        v{vertex}, w{0},
-        gv{Nv} {
+        v{vertex}, w{end ? NO_VERTEX : 0},
+        gv{GRAPHROW(G.g, v, G.__get_m())} {
+    if(w != NO_VERTEX and not ISELEMENT(gv, w))
     ++*this;
 }
 
+EdgeIterator& EdgeIterator::operator++() {
+    if(w != NO_VERTEX) {
+        int x = nextelement(gv, graph.__get_m(), w);
+        w = (x < 0) ? NO_VERTEX : x;
+    }
+    return *this;
+}
+
 AllEdgeIterator::AllEdgeIterator(const Graph& G, bool end):
-        graph{G}, it(G, end ? G.V()-1 : 0, end) {
-    if((*it).second == WORDSIZE)
+        graph{G}, v{end ? G.V()-1 : 0},
+        it(G, v, end), it_end(G, v, true) {
+    if(it == it_end)
         next();
+    else
+        it.goto_afeter_v();
+}
+
+void AllEdgeIterator::next() {
+    ++it;
+    while(it == it_end and v < graph.V()-1) {
+        ++v;
+        it = EdgeIterator(graph, v, false);
+        it.goto_afeter_v();
+        it_end = EdgeIterator(graph, v, true);
+    }
 }
 
 /***** Edges *****/
@@ -60,14 +73,6 @@ Neighbours::operator std::vector<Vertex>() const {
 
 /***** Graph *****/
 
-static inline void _verify_m(int m) {
-    if(m > 1)
-        throw std::runtime_error(
-            "Does not handle more than " + std::to_string(WORDSIZE) +
-            " vertices so far"
-        );
-}
-
 Graph::Graph(const graph* G, size_t V):
         Graph(const_cast<graph*>(G), V, true) {
 }
@@ -78,7 +83,6 @@ Graph::Graph(graph* G, size_t V, bool copy):
         g{copy ? nullptr : G},
         nb_edges(*this), degrees(),
         _as_cliquer(*this) {
-    _verify_m(_m);
     if(copy)
         assign_from(G, V);
     init_degrees();
@@ -118,7 +122,6 @@ Graph::Graph(size_t V):
         g{new graph[_m * V]},
         nb_edges(*this), degrees(),
         _as_cliquer(*this) {
-    _verify_m(_m);
     for(Vertex v{0}; v < _m*V; ++v)
         g[v] = 0;
     init_degrees();
@@ -143,7 +146,6 @@ Graph::Graph(int* parents, size_t V):
         _m{SETWORDSNEEDED(n)}, g{nullptr},
         nb_edges(*this), degrees(),
         _as_cliquer(*this) {
-    _verify_m(_m);
     g = new graph[_m*n]{0};
     for(size_t v{2}; v <= V; ++v) {
         ADDONEEDGE(

@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include <nautypp/nauty.hpp>
+#include <nautypp/nautypp>
 
 using namespace nautypp;
 

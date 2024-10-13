@@ -1,78 +1,20 @@
 #ifndef NAUTYPP_IMPL_HPP
 #define NAUTYPP_IMPL_HPP
 
+#include <bit>
+
+#include <nautypp/algorithms.hpp>
+#include <nautypp/graph.hpp>
+#include <nautypp/iterators.hpp>
+#include <nautypp/properties.hpp>
+
 namespace nautypp {
-bool EdgeIterator::operator==(const EdgeIterator& other) const {
-    return std::addressof(graph) == std::addressof(other.graph)
-       and v == other.v
-       and gv == other.gv
-       and w == other.w;
-}
-
-bool EdgeIterator::operator!=(const EdgeIterator& other) const {
-    return not (*this == other);
-}
-
-EdgeIterator& EdgeIterator::operator=(EdgeIterator&& other) {
-    if(std::addressof(graph) != std::addressof(other.graph))
-        throw std::runtime_error(
-            "Cannot reassign EdgeIterator to a new graph"
-        );
-    v = other.v;
-    w = other.w;
-    gv = other.gv;
-    return *this;
-}
-
-EdgeIterator& EdgeIterator::operator++() {
-    if(gv > 0) {
-        TAKEBIT(w, gv);
-    } else {
-        w = WORDSIZE;
-    }
-    return *this;
-}
-
-std::pair<Vertex, Vertex> EdgeIterator::operator*() const {
-    return {v, w};
-}
-
-bool AllEdgeIterator::operator==(const AllEdgeIterator& other) const {
-    return it == other.it;
-}
-
-bool AllEdgeIterator::operator!=(const AllEdgeIterator& other) const {
-    return not (*this == other);
-}
-
-AllEdgeIterator& AllEdgeIterator::operator++() {
-    next();
-    return *this;
-}
-
-void AllEdgeIterator::next() {
-    ++it;
-    auto [v, w] = *it;
-    while(w == WORDSIZE and v+1 < graph.V()) {
-        ++v;
-        it = EdgeIterator(
-            graph, v,
-            *GRAPHROW(graph.g, v, graph.__get_m()) & MASKS[v]
-        );
-        std::tie(v, w) = *it;
-    }
-}
-
-std::pair<Vertex, Vertex> AllEdgeIterator::operator*() const {
-    return *it;
-}
-
 void DegreeProperty::compute() {
-    value = std::popcount(*GRAPHROW(
-        static_cast<const nauty_graph_t*>(*graph),
-        v,
-        graph->__get_m()
-    ));
+    const auto m{graph->__get_m()};
+    auto gv{GRAPHROW(static_cast<const nauty_graph_t*>(*graph), v, m)};
+    value = 0;
+    for(size_t i{0}; i < m; ++i, ++gv)
+        value += std::popcount(*gv);
 }
 
 void EdgeProperty::compute() {

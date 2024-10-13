@@ -3,7 +3,7 @@
 
 #define OSTREAM_LL_GRAPH
 #define OSTREAM_LL_CLIQUE
-#include <nautypp/nauty.hpp>
+#include <nautypp/nautypp>
 
 using namespace nautypp;
 

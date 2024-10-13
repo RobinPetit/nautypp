@@ -1,7 +1,7 @@
 #include <iostream>
 #include <map>
 
-#include <nautypp/nauty.hpp>
+#include <nautypp/nautypp>
 
 using namespace nautypp;
 
