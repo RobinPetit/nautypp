@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['nauty_55',['Nauty',['../classnautypp_1_1Nauty.html#a85fce97706f3c5c6d5f88fa28ee32d97',1,'nautypp::Nauty::Nauty()'],['../classnautypp_1_1Nauty.html',1,'nautypp::Nauty']]],
+  ['nauty_55',['Nauty',['../classnautypp_1_1Nauty.html',1,'nautypp']]],
   ['nauty_2ehpp_56',['nauty.hpp',['../nauty_8hpp.html',1,'']]],
   ['nautycontainer_57',['NautyContainer',['../classnautypp_1_1NautyContainer.html',1,'nautypp']]],
   ['nautycontainerbuffer_58',['NautyContainerBuffer',['../namespacenautypp.html#a3263d51ca94862affd5a59d74c03a352',1,'nautypp']]],
