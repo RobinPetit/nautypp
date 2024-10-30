@@ -8,10 +8,11 @@ using namespace nautypp;
 
 static inline size_t count_graphs(const NautyParameters& params) {
     std::atomic_size_t count{0};
-    Nauty(params).run_async(
+    Nauty().run_async(
         [&count](const Graph&) {
             ++count;
-        }
+        },
+        params
     );
     return count;
 }
@@ -93,4 +94,42 @@ $ for n in `seq 3 10`; do ./geng -uCt $n; done
         .Vmax=static_cast<int>(n)
     };
     REQUIRE(count_graphs(params) == expected_count);
+}
+
+TEST_CASE("Read graph6") {
+    Nauty nauty;
+    std::atomic_int count{0};
+    nauty.run_async(
+        [&count](const Graph& graph) {
+            ++count;
+            (void)graph;
+        },
+        "geng_4_biconnected.graph6",  // path
+        4  // max graph size
+    );
+/*
+$ geng -C 4 -u
+>A geng -Cd2D3 n=4 e=4-6
+>Z 3 graphs generated in 0.00 sec
+*/
+    REQUIRE(count == 3);
+}
+
+TEST_CASE("Read sparse6") {
+    Nauty nauty;
+    std::atomic_int count{0};
+    nauty.run_async(
+        [&count](const Graph& graph) {
+            ++count;
+            (void)graph;
+        },
+        "geng_4_biconnected.sparse6",  // path
+        4  // max graph size
+    );
+/*
+$ geng -C 4 -u
+>A geng -Cd2D3 n=4 e=4-6
+>Z 3 graphs generated in 0.00 sec
+*/
+    REQUIRE(count == 3);
 }

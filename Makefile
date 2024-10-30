@@ -25,6 +25,8 @@ build: build_debug build_release
 build_debug: lib/debug/libnautypp.a
 build_release: lib/release/libnautypp.a
 
+install: install_release
+
 install_release: build_release
 	mkdir -p ${INSTALL_LIB_PATH} && cp lib/release/libnautypp.a ${INSTALL_LIB_PATH}
 	mkdir -p ${INSTALL_INCLUDES_PATH} && cp includes/nautypp/*pp ${INSTALL_INCLUDES_PATH}

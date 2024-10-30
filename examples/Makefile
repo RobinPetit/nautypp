@@ -2,7 +2,7 @@ CC=g++
 FLAGS=-std=c++20 -g -O0 -Wall -Wextra -I ~/includes/ -L ~/lib/ -lnautypp -pthread -fsanitize=address
 
 EXAMPLES=bin/multithreaded_count_triangle_free_graphs bin/multithreaded_heavy_callback \
-		 bin/multithreaded_cliquer \
+		 bin/multithreaded_cliquer bin/multithreaded_graph_reader \
          bin/iterators_neighbours bin/degree_degrees \
 		 bin/cliquer bin/planar
 
@@ -28,3 +28,6 @@ obj/%.o: %.cpp
 
 clear:
 	rm -f ${EXAMPLES}
+	rm -f obj/*.o
+
+.PRECIOUS: obj/%.o

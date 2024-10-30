@@ -18,7 +18,6 @@ static constexpr auto NO_VERTEX{std::numeric_limits<Vertex>::max()};
 class Graph;
 
 /* ******************** Concepts ******************** */
-
 template <typename T>
 concept GraphRefFunctionType = requires(T obj, Graph& G) {
     { obj(G) };

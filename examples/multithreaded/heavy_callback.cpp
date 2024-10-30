@@ -86,8 +86,9 @@ int main() {
         .V=1,
         .Vmax=8,
     };
-    Nauty nauty(params);
+    Nauty nauty;
     auto lower_bounds = nauty.run_async<Callback>(
+        params,
         16,     // 16 workers (or threads)
         10'000  // 10k graphs per buffer
     );

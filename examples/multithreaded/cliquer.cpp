@@ -17,7 +17,7 @@ int main() {
         .V=3,
         .Vmax=10
     };
-    Nauty nauty(params);
+    Nauty nauty;
     std::atomic_uint32_t maxclique{0};
     nauty.run_async(
         [&maxclique](const Graph& G) {
@@ -30,6 +30,7 @@ int main() {
                 }
             );
         },
+        params,
         16
     );
     std::cout << "The biggest clique found contained " << maxclique << " vertices\n";

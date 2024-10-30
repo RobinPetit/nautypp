@@ -474,7 +474,7 @@ public:
     /// \brief Generate all cliques from a graph.
     ///
     /// \param minsize,maxsize,maximal See find_some_clique.
-    /// \param A container of cliques.
+    /// \return A container of cliques.
     ///
     /// **Example**:
     /// \include cliquer.cpp

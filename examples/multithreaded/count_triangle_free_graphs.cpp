@@ -37,14 +37,15 @@ static unsigned through_all() {
         .V=V,
         .Vmax=V
     };
-    Nauty nauty(params);
+    Nauty nauty;
     std::atomic_uint ret;
     nauty.run_async(
         [&ret](const Graph& G) {
             if(contains_triangle(G))
                 return;
             ++ret;
-        }
+        },
+        params
     );
     return ret;
 }
@@ -57,12 +58,13 @@ static unsigned through_triangle_frees() {
         .V=V,
         .Vmax=V
     };
-    Nauty nauty(params);
+    Nauty nauty;
     std::atomic_uint ret;
     nauty.run_async(
         [&ret](const Graph& /* G */) {
             ++ret;
-        }
+        },
+        params
     );
     return ret;
 }

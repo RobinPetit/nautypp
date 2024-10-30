@@ -26,7 +26,7 @@ Compilation will create directories `./obj/` and `./lib/` for respectively objec
 Choose where to install the static library and the include files, and modify the variables `INSTALL_INCLUDES_PATH`and
 `INSTALL_LIB_PATH` accordingly in the `Makefile`. If the directories do not exist, they will be created.
 
-Then simply run `$ make install_release` to install `nautypp`.
+Then simply run `$ make install` to install `nautypp`.
 
 ## Examples
 
